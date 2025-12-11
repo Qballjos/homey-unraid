@@ -15,25 +15,37 @@
   },
   "settings": [
     {
-      "id": "baseUrl",
-      "type": "text",
-      "label": { "en": "Server URL (e.g. http://tower)" },
-      "hint": { "en": "Root URL of your Unraid server WebGUI" },
-      "value": "http://tower"
+      "type": "group",
+      "label": { "en": "Connection Settings" },
+      "children": [
+        {
+          "id": "baseUrl",
+          "type": "text",
+          "label": { "en": "Server URL" },
+          "hint": { "en": "Example: http://192.168.1.100:8080/graphql" },
+          "value": "http://tower:8080/graphql"
+        },
+        {
+          "id": "apiKey",
+          "type": "password",
+          "label": { "en": "API Key" },
+          "hint": { "en": "Get from Unraid: Settings → API" },
+          "value": ""
+        }
+      ]
     },
     {
-      "id": "apiKey",
-      "type": "password",
-      "label": { "en": "API Key" },
-      "hint": { "en": "Create under Settings → Management Access → API Keys" },
-      "value": ""
-    },
-    {
-      "id": "pollInterval",
-      "type": "number",
-      "label": { "en": "Polling interval (seconds)" },
-      "value": 30,
-      "attr": { "min": 10, "max": 300, "step": 5 }
+      "type": "group",
+      "label": { "en": "Polling Settings" },
+      "children": [
+        {
+          "id": "pollInterval",
+          "type": "number",
+          "label": { "en": "Poll interval (seconds)" },
+          "value": 60,
+          "attr": { "min": 10, "max": 300, "step": 5 }
+        }
+      ]
     },
     {
       "id": "domains",
