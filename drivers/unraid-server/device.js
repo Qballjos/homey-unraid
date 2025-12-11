@@ -4,8 +4,7 @@ const UnraidGraphQLClient = require('../../lib/graphql');
 class UnraidDevice extends Homey.Device {
   async onInit() {
     try {
-      this.log('🔥🔥🔥 Device onInit START');
-      this.log(`Device init: ${this.getName()}`);
+      this.log(`Initializing device: ${this.getName()}`);
 
       this.pollHandle = null;
       this.lastState = {
@@ -20,28 +19,17 @@ class UnraidDevice extends Homey.Device {
         cpuPercent: null,
       };
 
-      this.log('🔥 Step 1: Initialize capabilities');
       await this._initializeCapabilities();
-
-      this.log('🔥 Step 1.5: Fix capability order');
       await this._fixCapabilityOrder();
-
-      this.log('🔥 Step 1.6: Update capability visibility');
       await this._updateCapabilityVisibility(this.getSettings());
-
-      this.log('🔥 Step 2: Apply settings');
       await this._applySettings(this.getSettings());
-
-      this.log('🔥 Step 3: Schedule polling');
       this._schedulePoll();
-
-      this.log('🔥 Step 4: Register handlers');
       this._registerActionHandlers();
       this._registerConditionHandlers();
 
-      this.log('🔥🔥🔥 Device onInit COMPLETE');
+      this.log(`Device initialized: ${this.getName()}`);
     } catch (error) {
-      this.error('❌❌❌ Error in onInit:', error);
+      this.error('Error during device initialization:', error);
       throw error;
     }
   }
@@ -224,7 +212,7 @@ class UnraidDevice extends Homey.Device {
   }
 
   async _updateCapabilityVisibility(settings) {
-    this.log('👁️ Updating capability visibility based on poll settings');
+    // Update capability visibility based on poll settings
 
     // Map poll settings to their capabilities (using actual capability IDs from app.json)
     const capabilityMap = {
@@ -257,8 +245,6 @@ class UnraidDevice extends Homey.Device {
         }
       }
     }
-
-    this.log('👁️ Capability visibility updated');
   }
 
   _schedulePoll(reset = false) {
@@ -287,9 +273,7 @@ class UnraidDevice extends Homey.Device {
     }
 
     const query = this._buildQuery();
-    this.log('📤 Query:', query);
     const data = await this.client.request(query);
-    this.log('📥 Full response:', JSON.stringify(Object.keys(data)));
     this.setAvailable();
     this._updateState(data);
   }

@@ -9,17 +9,23 @@ Comprehensive Homey app for monitoring and controlling Unraid servers via the of
 
 All metrics with 📊 support **Homey Insights** for historical tracking and graphs!
 
+### Always Visible (Core Metrics)
 - **CPU Load** 📊 - Current CPU usage (%)
 - **Memory Used** 📊 - RAM usage (%)
-- **Disk Temperature** - Maximum disk temperature (°C)
-- **Array Space Used** 📊 - Cache pool usage (%)
-- **Parity Progress** 📊 - Live parity check progress (%)
-- **Array Errors** 📊 - Error count from parity checks
-- **Containers Running** 📊 - Number of active Docker containers
-- **VMs Running** 📊 - Number of active virtual machines
+- **CPU Temperature** 📊 - Processor temperature (°C) - *Prominent display!*
 - **Uptime** 📊 - Server uptime (hours)
-- **Array Status** - Current status (started/stopped/parity check/mover)
+
+### Dynamic (Based on Poll Settings)
+- **Disk Temperature** 📊 - Maximum disk temperature (°C) - *When `pollArray` enabled*
+- **Array Space Used** 📊 - Disk array usage (%) - *When `pollArray` enabled*
+- **Parity Progress** 📊 - Live parity check progress (%) - *When `pollArray` enabled*
+- **Array Errors** 📊 - Error count from parity checks - *When `pollArray` enabled*
+- **Array Status** - Current status (started/stopped/parity check/mover) - *When `pollArray` enabled*
+- **Containers Running** 📊 - Number of active Docker containers - *When `pollDocker` enabled*
+- **VMs Running** 📊 - Number of active virtual machines - *When `pollVms` enabled*
 - **Alarm** - Warning indicator for high disk temperature
+
+> **New**: Capabilities automatically hide when their poll setting is disabled for a cleaner device tile!
 
 ### Insights Integration
 View historical trends in Homey Insights:
@@ -39,22 +45,26 @@ View historical trends in Homey Insights:
 - **Docker**: Running container count, state changes, crash detection
 - **VMs**: Active VM count, state transitions
 
-### ⚡ Smart Automation (13 Triggers)
-- Array & parity events (started/stopped/completed/error)
-- Mover activity (started/finished)
-- Disk health alerts (temperature warnings, SMART failures)
-- Container monitoring (state changes, crashes with exit codes)
-- VM state changes
-- CPU threshold alerts
+### ⚡ Smart Automation (16 Triggers with Rich Tags)
+- **Array & Parity**: started/stopped/completed/error (with error count)
+- **Mover**: started/finished
+- **Disk Health**: temperature warnings, SMART failures (per-disk with name & temp)
+- **Containers**: state changes, started, stopped, crashed (with {{status}}, {{auto_start}}, {{exit_code}})
+- **VMs**: state changes, started, stopped (with {{vm_name}}, {{vm_id}})
+- **Shares**: space low (with {{share_name}}, {{free_gb}}, {{used_gb}}, {{total_gb}}, {{used_percent}})
+- **CPU**: threshold alerts
 
-### 🎮 Full Control (16 Actions)
-- Array management (start/stop, parity check control)
-- Cache mover control (start/stop)
-- Docker containers (start/stop/restart/update) with **autocomplete** ✨
-- Virtual machines (start/stop/reboot/pause/resume) with **autocomplete** ✨
-- Notifications with severity levels (normal/warning/alert)
+> **New**: All triggers include rich flow tags for detailed automation!
 
-> **New**: Container and VM names are now auto-populated from your server—no more typing!
+### 🎮 Full Control (17 Actions)
+- **Array Management**: start/stop, parity check control
+- **Cache Mover**: start/stop control
+- **Docker Containers**: start/stop/restart/update with **autocomplete** ✨
+- **Virtual Machines**: start/stop/reboot/pause/resume with **autocomplete** ✨
+- **Notifications**: send with severity levels (normal/warning/alert)
+- **Force Refresh**: instantly poll server for latest data
+
+> **New**: Force refresh action for on-demand updates without waiting!
 
 ### 🔧 Advanced Conditions (7)
 - Check array/parity/mover status

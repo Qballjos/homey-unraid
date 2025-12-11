@@ -7,6 +7,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-12-11
+
+### 🎉 Major Feature Release - Flow Tags & Dynamic UI
+
+#### Added
+**Share Space Monitoring**
+- `share_space_low` trigger with 6 rich flow tags:
+  - `{{share_name}}` - Name of the share
+  - `{{free_gb}}` - Free space in GB
+  - `{{used_gb}}` - Used space in GB
+  - `{{total_gb}}` - Total size in GB
+  - `{{used_percent}}` - Used percentage
+  - `{{free_percent}}` - Free percentage
+- Configurable threshold (50-99%, default 90%)
+- Smart triggering (only when crossing threshold, no spam)
+- Auto-recovery tracking when space frees up
+
+**Container Flow Tags (Enhanced)**
+- `container_started` - New dedicated start trigger
+- `container_stopped` - New dedicated stop trigger
+- `container_state_changed` - Enhanced with rich tokens:
+  - `{{container_name}}` - Clean name (no leading slash)
+  - `{{old_state}}` / `{{new_state}}` - State transitions
+  - `{{status}}` - Full status text ("Up 2 days", etc.)
+  - `{{auto_start}}` - Auto-start enabled (true/false)
+- `container_crashed` - Enhanced with:
+  - `{{exit_code}}` - Exit code for crashes
+  - `{{status}}` - Crash details
+  - `{{auto_start}}` - Was auto-start enabled
+
+**VM Flow Tags (Enhanced)**
+- `vm_started` - New dedicated start trigger
+- `vm_stopped` - New dedicated stop trigger  
+- `vm_state_changed` - Enhanced with rich tokens:
+  - `{{vm_name}}` - VM name
+  - `{{vm_id}}` - VM unique ID
+  - `{{old_state}}` / `{{new_state}}` - State transitions
+
+**Dynamic Capability Visibility**
+- Capabilities now hide/show based on poll settings
+- `pollArray = false` → Hides array-related capabilities
+- `pollDocker = false` → Hides container count
+- `pollVms = false` → Hides VM count
+- Instant update when changing settings
+- Cleaner device tile (only shows what's monitored)
+
+**Force Refresh Action**
+- New flow action: "Force refresh data from Unraid server"
+- Instantly polls server without waiting for next interval
+- Useful for testing and on-demand updates
+- Works with all devices
+
+#### Enhanced
+- **CPU Temperature Display**: Automatically prioritized on device tile
+  - CPU temp now shows prominently (position 3)
+  - Disk temp moved to end (still available for flows)
+  - Automatic reordering for existing devices
+  - No device removal needed
+- **Share Space Validation**: Complete validation for NaN prevention
+  - Checks `share.used` and `share.free` for null/undefined
+  - Prevents NaN values in flow tokens
+  - Allows zero values (empty shares)
+- **Capability Management**: Protection against invalid capability errors
+  - All `setCapabilityValue()` calls now check capability existence
+  - Graceful handling when capabilities are hidden
+  - No 404 errors for removed capabilities
+
+#### Fixed
+- **Invalid Capability Errors**: Fixed capability ID mismatches
+  - `measure_disk_temperature` → `measure_temperature`
+  - `measure_array_errors` → `meter_array_errors`
+  - `measure_parity` → `measure_parity_progress`
+  - `measure_array_usage` → `measure_disk_usage`
+- **Share NaN Bug**: Validation now checks all required fields
+- **Capability Order**: CPU temperature now shows before disk temperature
+- **Hidden Capability Updates**: No longer tries to set values for hidden capabilities
+
+#### Changed
+- Container names now clean (leading slash removed)
+- Flow token naming consistent across all triggers
+- Capability order optimized for better UX
+- Share polling triggers only on threshold crossings
+
+### Technical Improvements
+- Per-share state tracking (lowSpaceShares array)
+- Capability existence checks before all value updates
+- Automatic capability reordering on device init
+- Enhanced logging with emojis for better debugging
+- Comprehensive validation for all shared data
+
 ## [0.3.2] - 2025-12-11
 
 ### 🔧 Changed

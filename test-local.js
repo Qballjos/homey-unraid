@@ -83,8 +83,8 @@ try {
     throw new Error('GraphQL client should have request functionality');
   }
 
-  if (!clientCode.includes('Authorization') || !clientCode.includes('Bearer')) {
-    throw new Error('GraphQL client should use Bearer token authentication');
+  if (!clientCode.includes('x-api-key')) {
+    throw new Error('GraphQL client should use x-api-key authentication');
   }
 
   console.log('✓ GraphQL client structure looks correct\n');
