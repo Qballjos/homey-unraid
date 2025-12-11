@@ -34,10 +34,10 @@ homey app run
 - Thresholds: CPU %, disk temp °C
 - `allowControl`: enable start/stop/restart/pull for containers, array ops, VM power
 
-## Flows (current)
-- **Triggers**: array started/stopped, parity completed, container state changed, VM state changed, CPU over threshold.
-- **Conditions**: array started, container running, VM running.
-- **Actions**: start/stop array, start parity check; start/stop/restart/update (pull) container; start/stop/reboot VM; send Unraid notification.
+## Flows
+- **Triggers** (13): array started/stopped; parity started/completed/error; mover started/finished; disk temp warning; SMART failure; container state changed/crashed; VM state changed; CPU over threshold.
+- **Conditions** (7): array started; parity in progress; mover running; disk temp above; free space above; container running; VM running.
+- **Actions** (16): start/stop array; start/stop parity check; start/stop mover; start/stop/restart/update container; start/stop/reboot/pause/resume VM; send notification (with level).
 
 ## Development notes
 - Icons: `assets/icon-small.png` (250x175), `assets/icon-large.png` (500x350); driver icons 75x75 and 500x500.

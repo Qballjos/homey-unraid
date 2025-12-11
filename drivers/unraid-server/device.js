@@ -8,8 +8,12 @@ class UnraidDevice extends Homey.Device {
     this.lastState = {
       arrayStarted: null,
       parityPercent: null,
+      parityInProgress: null,
+      parityErrors: null,
+      moverRunning: null,
       containers: {},
       vms: {},
+      disks: {},
       cpuPercent: null,
     };
 
@@ -55,6 +59,9 @@ class UnraidDevice extends Homey.Device {
     driver.actions.startArray.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { start } }')));
     driver.actions.stopArray.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { stop } }')));
     driver.actions.startParity.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { parityCheck } }')));
+    driver.actions.stopParity.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { stopParityCheck } }')));
+    driver.actions.startMover.registerRunListener(() => this._requireControl(() => this._mutation('mutation { mover { start } }')));
+    driver.actions.stopMover.registerRunListener(() => this._requireControl(() => this._mutation('mutation { mover { stop } }')));
 
     driver.actions.startContainer.registerRunListener(async (args) => this._requireControl(() =>
       this._mutation('mutation($name:String!){ docker { startContainer(name:$name) } }', { name: args.name }),
@@ -78,16 +85,42 @@ class UnraidDevice extends Homey.Device {
     driver.actions.rebootVm.registerRunListener(async (args) => this._requireControl(() =>
       this._mutation('mutation($name:String!){ vms { reboot(name:$name) } }', { name: args.name }),
     ));
+    driver.actions.pauseVm.registerRunListener(async (args) => this._requireControl(() =>
+      this._mutation('mutation($name:String!){ vms { pause(name:$name) } }', { name: args.name }),
+    ));
+    driver.actions.resumeVm.registerRunListener(async (args) => this._requireControl(() =>
+      this._mutation('mutation($name:String!){ vms { resume(name:$name) } }', { name: args.name }),
+    ));
 
     driver.actions.sendNotification.registerRunListener(async (args) => this._mutation(
-      'mutation($message:String!){ notifications { send(message:$message, level:info) } }',
-      { message: args.message },
+      'mutation($message:String!,$level:String!){ notifications { send(message:$message, level:$level) } }',
+      { message: args.message, level: args.level || 'normal' },
     ));
   }
 
   _registerConditionHandlers() {
     const driver = this.getDriver();
     driver.conditions.arrayIsStarted.registerRunListener(() => Promise.resolve(this.lastState.arrayStarted === true));
+    driver.conditions.parityInProgress.registerRunListener(() => Promise.resolve(this.lastState.parityInProgress === true));
+    driver.conditions.moverIsRunning.registerRunListener(() => Promise.resolve(this.lastState.moverRunning === true));
+    driver.conditions.diskTempAbove.registerRunListener((args) => {
+      const disk = this.lastState.disks?.[args.name];
+      return Promise.resolve(disk && disk.temp > args.threshold);
+    });
+    driver.conditions.freeSpaceAbove.registerRunListener((args) => {
+      // Check cache pools or shares
+      const resource = this.lastState.shares?.find(s => s.name === args.name) ||
+                       this.lastState.cachePools?.find(p => p.name === args.name);
+      if (!resource) {
+        return Promise.resolve(false);
+      }
+      const totalSpace = (resource.free || 0) + (resource.used || 0);
+      if (totalSpace === 0) {
+        return Promise.resolve(false);
+      }
+      const freePercent = ((resource.free || 0) / totalSpace) * 100;
+      return Promise.resolve(freePercent > args.threshold);
+    });
     driver.conditions.containerIsRunning.registerRunListener((args) => Promise.resolve(
       this.lastState.containers?.[args.name]?.state === 'running',
     ));
@@ -139,10 +172,10 @@ class UnraidDevice extends Homey.Device {
     const parts = [];
     parts.push('system { uptime cpu { load } memory { used total } }');
     if (domains.pollArray) {
-      parts.push('array { status parity { inProgress percent } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
+      parts.push('array { status parity { inProgress percent errors } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
     }
     if (domains.pollDocker) {
-      parts.push('docker { containers { name state restartCount } }');
+      parts.push('docker { containers { name state restartCount exitCode } }');
     }
     if (domains.pollVms) {
       parts.push('vms { name state }');
@@ -193,10 +226,36 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('array_status', statusText).catch(this.error);
 
       // Parity tracking
-      if (array.parity?.inProgress === false && this.lastState.parityPercent !== null && this.lastState.parityPercent !== 100) {
-        this.getDriver().triggers.parityCompleted.trigger(this, {}).catch(this.error);
+      const parityNow = array.parity?.inProgress || false;
+      const parityErrors = array.parity?.errors || 0;
+
+      // Parity started trigger
+      if (parityNow && !this.lastState.parityInProgress) {
+        this.getDriver().triggers.parityStarted.trigger(this, {}).catch(this.error);
       }
+
+      // Parity completed trigger
+      if (!parityNow && this.lastState.parityInProgress) {
+        this.getDriver().triggers.parityCompleted.trigger(this, {}).catch(this.error);
+
+        // Check for errors
+        if (parityErrors > 0) {
+          this.getDriver().triggers.parityError.trigger(this, { errors: parityErrors }).catch(this.error);
+        }
+      }
+
+      this.lastState.parityInProgress = parityNow;
       this.lastState.parityPercent = array.parity?.percent ?? null;
+      this.lastState.parityErrors = parityErrors;
+
+      // Mover tracking
+      const moverNow = array.mover?.running || false;
+      if (moverNow && !this.lastState.moverRunning) {
+        this.getDriver().triggers.moverStarted.trigger(this, {}).catch(this.error);
+      } else if (!moverNow && this.lastState.moverRunning) {
+        this.getDriver().triggers.moverFinished.trigger(this, {}).catch(this.error);
+      }
+      this.lastState.moverRunning = moverNow;
 
       // Disk usage from cache pools
       if (array.cache?.pools && array.cache.pools.length > 0) {
@@ -210,19 +269,43 @@ class UnraidDevice extends Homey.Device {
           const diskUsagePercent = Math.round((totalUsed / totalSpace) * 1000) / 10;
           this.setCapabilityValue('measure_disk_usage', diskUsagePercent).catch(this.error);
         }
+        this.lastState.cachePools = array.cache.pools;
       }
 
-      // Disk temperature monitoring
+      // Disk temperature and SMART monitoring
+      const diskTempThreshold = this.settings.thresholds?.diskTempThreshold || 60;
       const maxTemp = Math.max(...(array.disks || []).map(d => d.temp || 0), 0);
       if (Number.isFinite(maxTemp)) {
         this.setCapabilityValue('measure_temperature', maxTemp).catch(this.error);
       }
-      const diskHot = (array.disks || []).find(d => d.temp >= (this.settings.thresholds?.diskTempThreshold || 60));
-      if (diskHot) {
-        this.setCapabilityValue('alarm_generic', true).catch(this.error);
-      } else {
-        this.setCapabilityValue('alarm_generic', false).catch(this.error);
-      }
+
+      let hasHotDisk = false;
+      (array.disks || []).forEach(disk => {
+        const prevDisk = this.lastState.disks[disk.name] || {};
+
+        // Temperature warning trigger
+        if (disk.temp && disk.temp >= diskTempThreshold && (!prevDisk.temp || prevDisk.temp < diskTempThreshold)) {
+          this.getDriver().triggers.diskTempWarning.trigger(this, { name: disk.name, temp: disk.temp }).catch(this.error);
+          hasHotDisk = true;
+        }
+
+        // SMART failure trigger
+        if (disk.smartStatus && disk.smartStatus !== 'PASSED' && prevDisk.smartStatus === 'PASSED') {
+          this.getDriver().triggers.smartFailure.trigger(this, { name: disk.name }).catch(this.error);
+        }
+
+        // Store disk state
+        this.lastState.disks[disk.name] = {
+          temp: disk.temp,
+          smartStatus: disk.smartStatus,
+        };
+
+        if (disk.temp && disk.temp >= diskTempThreshold) {
+          hasHotDisk = true;
+        }
+      });
+
+      this.setCapabilityValue('alarm_generic', hasHotDisk).catch(this.error);
     } else {
       // Array polling disabled - set unavailable status
       this.setCapabilityValue('array_status', 'not monitored').catch(this.error);
@@ -238,10 +321,22 @@ class UnraidDevice extends Homey.Device {
 
       docker.containers.forEach(c => {
         const prev = this.lastState.containers[c.name];
+
+        // Container state changed
         if (prev && prev.state !== c.state) {
           this.getDriver().triggers.containerChanged.trigger(this, { name: c.name, from: prev.state, to: c.state }).catch(this.error);
+
+          // Container crashed (exited with non-zero code)
+          if (c.state === 'exited' && c.exitCode && c.exitCode !== 0) {
+            this.getDriver().triggers.containerCrashed.trigger(this, { name: c.name, code: c.exitCode }).catch(this.error);
+          }
         }
-        this.lastState.containers[c.name] = c;
+
+        this.lastState.containers[c.name] = {
+          state: c.state,
+          restartCount: c.restartCount || 0,
+          exitCode: c.exitCode,
+        };
       });
     } else {
       // Docker polling disabled

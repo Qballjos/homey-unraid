@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **7 new triggers**: parity started/error, mover started/finished, disk temp warning, SMART failure, container crashed
+- **4 new conditions**: parity in progress, mover running, disk temp above, free space above
+- **5 new actions**: stop parity check, start/stop mover, pause/resume VM
+- Enhanced notification action with level selection (normal/warning/alert)
+- Per-disk temperature and SMART monitoring with historical tracking
+- Container crash detection (non-zero exit codes)
+- Mover activity tracking
+- Parity error detection and reporting
+
+### Changed
+- Updated GraphQL queries to include exit codes and parity errors
+- Enhanced state tracking for disks, parity, and mover
+
 ## [0.1.0] - 2025-12-11
 
 ### Added

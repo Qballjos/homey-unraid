@@ -138,6 +138,52 @@
         "title": { "en": "Parity check completed" }
       },
       {
+        "id": "parity_started",
+        "title": { "en": "Parity check started" }
+      },
+      {
+        "id": "parity_error",
+        "title": { "en": "Parity check error detected" },
+        "titleFormatted": { "en": "Parity check found [[errors]] error(s)" },
+        "tokens": [
+          { "name": "errors", "type": "number", "title": { "en": "Errors" } }
+        ]
+      },
+      {
+        "id": "mover_started",
+        "title": { "en": "Mover started" }
+      },
+      {
+        "id": "mover_finished",
+        "title": { "en": "Mover finished" }
+      },
+      {
+        "id": "disk_temp_warning",
+        "title": { "en": "Disk temperature warning" },
+        "titleFormatted": { "en": "Disk [[name]] temperature [[temp]]°C" },
+        "tokens": [
+          { "name": "name", "type": "string", "title": { "en": "Disk" } },
+          { "name": "temp", "type": "number", "title": { "en": "Temperature" } }
+        ]
+      },
+      {
+        "id": "smart_failure",
+        "title": { "en": "SMART failure detected" },
+        "titleFormatted": { "en": "Disk [[name]] SMART failure" },
+        "tokens": [
+          { "name": "name", "type": "string", "title": { "en": "Disk" } }
+        ]
+      },
+      {
+        "id": "container_crashed",
+        "title": { "en": "Container crashed" },
+        "titleFormatted": { "en": "Container [[name]] crashed (exit [[code]])" },
+        "tokens": [
+          { "name": "name", "type": "string", "title": { "en": "Container" } },
+          { "name": "code", "type": "number", "title": { "en": "Exit code" } }
+        ]
+      },
+      {
         "id": "container_state_changed",
         "title": { "en": "Container state changed" },
         "titleFormatted": { "en": "Container [[name]] changed from [[from]] to [[to]]" },
@@ -182,6 +228,32 @@
         "title": { "en": "VM is running" },
         "titleFormatted": { "en": "VM [[name]] is running" },
         "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "parity_in_progress",
+        "title": { "en": "Parity check in progress" }
+      },
+      {
+        "id": "mover_is_running",
+        "title": { "en": "Mover is running" }
+      },
+      {
+        "id": "disk_temp_above",
+        "title": { "en": "Disk temperature above" },
+        "titleFormatted": { "en": "Disk [[name]] temperature above [[threshold]]°C" },
+        "args": [
+          { "name": "name", "type": "text" },
+          { "name": "threshold", "type": "number" }
+        ]
+      },
+      {
+        "id": "free_space_above",
+        "title": { "en": "Free space above" },
+        "titleFormatted": { "en": "[[name]] has more than [[threshold]]% free" },
+        "args": [
+          { "name": "name", "type": "text", "placeholder": { "en": "share or cache" } },
+          { "name": "threshold", "type": "number" }
+        ]
       }
     ],
     "actions": [
@@ -196,6 +268,18 @@
       {
         "id": "start_parity_check",
         "title": { "en": "Start parity check" }
+      },
+      {
+        "id": "stop_parity_check",
+        "title": { "en": "Stop parity check" }
+      },
+      {
+        "id": "start_mover",
+        "title": { "en": "Start mover" }
+      },
+      {
+        "id": "stop_mover",
+        "title": { "en": "Stop mover" }
       },
       {
         "id": "start_container",
@@ -240,10 +324,34 @@
         "args": [{ "name": "name", "type": "text" }]
       },
       {
+        "id": "pause_vm",
+        "title": { "en": "Pause VM" },
+        "titleFormatted": { "en": "Pause VM [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "resume_vm",
+        "title": { "en": "Resume VM" },
+        "titleFormatted": { "en": "Resume VM [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
         "id": "send_unraid_notification",
         "title": { "en": "Send Unraid notification" },
-        "titleFormatted": { "en": "Send notification: [[message]]" },
-        "args": [{ "name": "message", "type": "text" }]
+        "titleFormatted": { "en": "Send [[level]] notification: [[message]]" },
+        "args": [
+          {
+            "name": "level",
+            "type": "dropdown",
+            "title": { "en": "Level" },
+            "values": [
+              { "id": "normal", "label": { "en": "Normal" } },
+              { "id": "warning", "label": { "en": "Warning" } },
+              { "id": "alert", "label": { "en": "Alert" } }
+            ]
+          },
+          { "name": "message", "type": "text" }
+        ]
       }
     ]
   },
