@@ -3,25 +3,41 @@ const UnraidGraphQLClient = require('../../lib/graphql');
 
 class UnraidDevice extends Homey.Device {
   async onInit() {
-    this.log(`Device init: ${this.getName()}`);
-    this.pollHandle = null;
-    this.lastState = {
-      arrayStarted: null,
-      parityPercent: null,
-      parityInProgress: null,
-      parityErrors: null,
-      moverRunning: null,
-      containers: {},
-      vms: {},
-      disks: {},
-      cpuPercent: null,
-    };
+    try {
+      this.log('🔥🔥🔥 Device onInit START');
+      this.log(`Device init: ${this.getName()}`);
+      
+      this.pollHandle = null;
+      this.lastState = {
+        arrayStarted: null,
+        parityPercent: null,
+        parityInProgress: null,
+        parityErrors: null,
+        moverRunning: null,
+        containers: {},
+        vms: {},
+        disks: {},
+        cpuPercent: null,
+      };
 
-    await this._initializeCapabilities();
-    await this._applySettings(this.getSettings());
-    this._schedulePoll();
-    this._registerActionHandlers();
-    this._registerConditionHandlers();
+      this.log('🔥 Step 1: Initialize capabilities');
+      await this._initializeCapabilities();
+      
+      this.log('🔥 Step 2: Apply settings');
+      await this._applySettings(this.getSettings());
+      
+      this.log('🔥 Step 3: Schedule polling');
+      this._schedulePoll();
+      
+      this.log('🔥 Step 4: Register handlers');
+      this._registerActionHandlers();
+      this._registerConditionHandlers();
+      
+      this.log('🔥🔥🔥 Device onInit COMPLETE');
+    } catch (error) {
+      this.error('❌❌❌ Error in onInit:', error);
+      throw error;
+    }
   }
 
   async _initializeCapabilities() {
