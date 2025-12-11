@@ -13,6 +13,41 @@
     "large": "/drivers/unraid-server/assets/icon-large.png",
     "small": "/drivers/unraid-server/assets/icon-small.png"
   },
+  "pair": [
+    {
+      "id": "login_credentials",
+      "template": "login_credentials",
+      "options": {
+        "logo": "/drivers/unraid-server/assets/icon.svg",
+        "title": {
+          "en": "Connect to Unraid Server"
+        },
+        "usernameLabel": {
+          "en": "Server URL"
+        },
+        "usernamePlaceholder": {
+          "en": "http://192.168.1.100:8080/graphql"
+        },
+        "passwordLabel": {
+          "en": "API Key"
+        },
+        "passwordPlaceholder": {
+          "en": "Paste your Unraid API key"
+        }
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
   "settings": [
     {
       "id": "baseUrl",

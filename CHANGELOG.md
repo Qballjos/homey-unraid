@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-12-11
+
+### 🐛 Fixed
+- **Critical**: Added missing pairing flow for device setup
+  - Users can now add Unraid server devices properly
+  - Pairing form shows URL and API key input fields
+  - Connection validation during pairing
+  - Automatic device naming from server hostname
+
+### Technical
+- Added `pair` configuration to `driver.compose.json`
+- Implemented `onPair()` handler in `driver.js`
+- Validates URL format (must include `/graphql`)
+- Tests connection before completing pairing
+
 ## [0.3.0] - 2025-12-11
 
 ### 🎉 UX & Analytics Release
