@@ -204,8 +204,7 @@ class UnraidDevice extends Homey.Device {
     const { domains = {} } = this.settings;
     const parts = [];
 
-    // Based on https://docs.unraid.net/API/how-to-use-the-api/
-    // System metrics from 'metrics' type (has CPU and memory utilization)
+    // Based on GraphQL schema Query type
     parts.push('metrics { cpuUtilization { currentLoad } memoryUtilization { used total } }');
     parts.push('info { os { uptime } }');
 
@@ -213,13 +212,21 @@ class UnraidDevice extends Homey.Device {
       parts.push('array { state capacity { disks { free used total } } disks { name size status temp } }');
     }
     if (domains.pollDocker) {
-      parts.push('dockerContainers { id names state status autoStart }');
+      // 'docker' is singular, returns Docker object with containers field
+      parts.push('docker { containers { id names state status autoStart } }');
+    }
+    if (domains.pollVms) {
+      // 'vms' returns Vms object - need to discover fields
+      parts.push('vms { domains { name state } }');
+    }
+    if (domains.pollShares) {
+      parts.push('shares { name free used }');
     }
     return `query { ${parts.join(' ')} }`;
   }
 
   _updateState(data) {
-    const { metrics, info, array, dockerContainers, vms, shares } = data;
+    const { metrics, info, array, docker, vms, shares } = data;
 
     // System metrics from 'metrics' type
     if (metrics) {
@@ -363,12 +370,13 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('alarm_generic', false).catch(this.error);
     }
 
-    // Docker containers
-    if (dockerContainers) {
-      const runningContainers = dockerContainers.filter(c => c.state === 'running').length;
+    // Docker containers (from 'docker { containers }')
+    if (docker?.containers) {
+      const containers = docker.containers;
+      const runningContainers = containers.filter(c => c.state === 'running').length;
       this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
 
-      dockerContainers.forEach(c => {
+      containers.forEach(c => {
         // API returns 'names' as array, use first name
         const containerName = Array.isArray(c.names) ? c.names[0] : c.names;
         const prev = this.lastState.containers[containerName];
