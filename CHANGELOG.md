@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Homey Insights integration** - 8 metrics now track historical data
+  - CPU Load (%) - Resource usage over time
+  - Memory Used (%) - RAM consumption trends
+  - Array Space Used (%) - Storage growth tracking
+  - Containers Running - Infrastructure changes
+  - VMs Running - VM count history
+  - Uptime (hours) - Stability tracking
+  - Parity Progress (%) - Check duration patterns
+  - Array Errors - Error count history
 - **Parity progress capability** - Real-time parity check progress (%)
 - **Array errors capability** - Error count from parity checks
 - **Container/VM autocomplete** - Auto-populated dropdowns from live server data
@@ -16,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All container and VM flow cards now use autocomplete instead of manual text entry
 - Container/VM names pulled directly from server (no more typos!)
 - Autocomplete shows current state (running/stopped) for each container/VM
+- 8 capabilities now support Insights for trend analysis and graphing
 
 ## [0.2.0] - 2025-12-11
 

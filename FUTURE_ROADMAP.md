@@ -111,12 +111,14 @@
 ### LOW PRIORITY - Advanced Features
 
 #### Insights & Analytics
-- [ ] **Homey Insights integration** - Track metrics over time
-  - CPU/RAM usage graphs
-  - Uptime tracking
-  - Space usage trends
-  - Container restart frequency
-  - Temperature history
+- [x] **Homey Insights integration** - Track metrics over time ✅ v0.3.0
+  - ✅ CPU/RAM usage graphs
+  - ✅ Uptime tracking
+  - ✅ Space usage trends
+  - ✅ Container/VM count history
+  - ✅ Parity progress tracking
+  - [ ] Container restart frequency (needs additional tracking)
+  - [ ] Per-disk temperature history (would need sub-devices)
 
 #### Notifications Integration
 - [ ] **Pull Unraid notifications** - Fetch system notifications

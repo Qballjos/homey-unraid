@@ -34,6 +34,7 @@
       "decimals": 0,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "measure_memory": {
@@ -45,6 +46,7 @@
       "decimals": 0,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "measure_disk_usage": {
@@ -56,6 +58,7 @@
       "decimals": 1,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "measure_containers": {
@@ -66,6 +69,7 @@
       "decimals": 0,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "measure_vms": {
@@ -76,6 +80,7 @@
       "decimals": 0,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "meter_uptime": {
@@ -86,6 +91,7 @@
       "decimals": 1,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "array_status": {
@@ -104,6 +110,7 @@
       "decimals": 1,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     },
     "meter_array_errors": {
@@ -114,6 +121,7 @@
       "decimals": 0,
       "getable": true,
       "setable": false,
+      "insights": true,
       "uiComponent": "sensor"
     }
   },

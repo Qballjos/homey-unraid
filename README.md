@@ -6,17 +6,29 @@
 Comprehensive Homey app for monitoring and controlling Unraid servers via the official GraphQL API (Unraid 7+). Monitor system health, manage Docker containers & VMs, track parity checks, and automate server operations—all from your Homey smart home.
 
 ## Device Metrics (Displayed on Card)
-- **CPU Load** - Current CPU usage (%)
-- **Memory Used** - RAM usage (%)
+
+All metrics with 📊 support **Homey Insights** for historical tracking and graphs!
+
+- **CPU Load** 📊 - Current CPU usage (%)
+- **Memory Used** 📊 - RAM usage (%)
 - **Disk Temperature** - Maximum disk temperature (°C)
-- **Array Space Used** - Cache pool usage (%)
-- **Parity Progress** - Live parity check progress (%) ✨ NEW
-- **Array Errors** - Error count from parity checks ✨ NEW
-- **Containers Running** - Number of active Docker containers
-- **VMs Running** - Number of active virtual machines
-- **Uptime** - Server uptime (hours)
+- **Array Space Used** 📊 - Cache pool usage (%)
+- **Parity Progress** 📊 - Live parity check progress (%)
+- **Array Errors** 📊 - Error count from parity checks
+- **Containers Running** 📊 - Number of active Docker containers
+- **VMs Running** 📊 - Number of active virtual machines
+- **Uptime** 📊 - Server uptime (hours)
 - **Array Status** - Current status (started/stopped/parity check/mover)
 - **Alarm** - Warning indicator for high disk temperature
+
+### Insights Integration
+View historical trends in Homey Insights:
+- **CPU/RAM usage** over time - Identify resource patterns
+- **Disk space growth** - Predict when storage will fill
+- **Container/VM counts** - Track infrastructure changes
+- **Uptime trends** - Monitor server stability
+- **Parity progress** - Historical parity check durations
+- **Temperature patterns** - Identify cooling issues
 
 ## Features
 
