@@ -438,7 +438,58 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('measure_vms', 0).catch(this.error);
     }
 
+    // Monitor share space
+    if (shares && shares.length > 0) {
+      this._checkShareSpace(shares);
+    }
+
     this.lastState.shares = shares;
+  }
+
+  _checkShareSpace(shares) {
+    const threshold = this.settings.shareSpaceThreshold || 90;
+
+    shares.forEach((share) => {
+      if (!share.name || !share.size || share.size === 0) return;
+
+      const usedPercent = Math.round((share.used / share.size) * 100);
+      const freePercent = 100 - usedPercent;
+
+      // Convert KB to GB
+      const totalGb = Math.round((share.size / 1024 / 1024) * 10) / 10;
+      const usedGb = Math.round((share.used / 1024 / 1024) * 10) / 10;
+      const freeGb = Math.round((share.free / 1024 / 1024) * 10) / 10;
+
+      // Check if share crossed threshold (wasn't low before, but is now)
+      const wasLow = this.lastState.lowSpaceShares?.includes(share.name);
+      const isLow = usedPercent >= threshold;
+
+      if (isLow && !wasLow) {
+        this.log(`🚨 Share "${share.name}" space low: ${usedPercent}% used (threshold: ${threshold}%)`);
+
+        // Trigger flow card with tokens
+        this.driver.triggers.shareSpaceLow.trigger(this, {
+          share_name: share.name,
+          free_gb: freeGb,
+          used_gb: usedGb,
+          total_gb: totalGb,
+          used_percent: usedPercent,
+          free_percent: freePercent,
+        }).catch(this.error);
+
+        // Track which shares are currently low
+        if (!this.lastState.lowSpaceShares) {
+          this.lastState.lowSpaceShares = [];
+        }
+        this.lastState.lowSpaceShares.push(share.name);
+      } else if (!isLow && wasLow) {
+        // Share recovered - remove from tracking
+        this.log(`✅ Share "${share.name}" recovered: ${usedPercent}% used`);
+        this.lastState.lowSpaceShares = this.lastState.lowSpaceShares.filter(
+          (name) => name !== share.name,
+        );
+      }
+    });
   }
 
   async _mutation(query, variables = {}) {

@@ -176,26 +176,6 @@
   "platforms": [
     "local"
   ],
-  "settings": [
-    {
-      "type": "group",
-      "label": {
-        "en": "🐛 Debug"
-      },
-      "children": [
-        {
-          "id": "refreshButton",
-          "type": "button",
-          "label": {
-            "en": "Force Refresh All Devices"
-          },
-          "hint": {
-            "en": "Immediately poll all Unraid servers for fresh data"
-          }
-        }
-      ]
-    }
-  ],
   "drivers": [
     {
       "id": "unraid-server",
@@ -277,7 +257,8 @@
           "label": { "en": "Thresholds" },
           "children": [
             { "id": "cpuThreshold", "type": "number", "label": { "en": "CPU %" }, "value": 80, "attr": { "min": 10, "max": 100 } },
-            { "id": "diskTempThreshold", "type": "number", "label": { "en": "Disk Temp °C" }, "value": 60, "attr": { "min": 20, "max": 90 } }
+            { "id": "diskTempThreshold", "type": "number", "label": { "en": "Disk Temp °C" }, "value": 60, "attr": { "min": 20, "max": 90 } },
+            { "id": "shareSpaceThreshold", "type": "number", "label": { "en": "Share Space %" }, "value": 90, "attr": { "min": 50, "max": 99 } }
           ]
         },
         {
@@ -375,6 +356,19 @@
         "titleFormatted": { "en": "CPU usage is [[percent]]%" },
         "args": [
           { "name": "percent", "type": "number" }
+        ]
+      },
+      {
+        "id": "share_space_low",
+        "title": { "en": "Share space low" },
+        "titleFormatted": { "en": "Share [[share_name]] is [[used_percent]]% full" },
+        "tokens": [
+          { "name": "share_name", "type": "string", "title": { "en": "Share name" } },
+          { "name": "free_gb", "type": "number", "title": { "en": "Free space (GB)" } },
+          { "name": "used_gb", "type": "number", "title": { "en": "Used space (GB)" } },
+          { "name": "total_gb", "type": "number", "title": { "en": "Total size (GB)" } },
+          { "name": "used_percent", "type": "number", "title": { "en": "Used (%)" } },
+          { "name": "free_percent", "type": "number", "title": { "en": "Free (%)" } }
         ]
       }
     ],
@@ -561,6 +555,18 @@
             ]
           },
           { "name": "message", "type": "text" }
+        ]
+      },
+      {
+        "id": "force_refresh",
+        "title": { "en": "Force refresh data" },
+        "titleFormatted": { "en": "Force refresh data from Unraid server" },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=unraid-server"
+          }
         ]
       }
     ]

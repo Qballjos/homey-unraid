@@ -19,6 +19,7 @@ class UnraidDriver extends Homey.Driver {
       containerCrashed: this.homey.flow.getTriggerCard('container_crashed'),
       vmChanged: this.homey.flow.getTriggerCard('vm_state_changed'),
       cpuOver: this.homey.flow.getTriggerCard('cpu_over_threshold'),
+      shareSpaceLow: this.homey.flow.getTriggerCard('share_space_low'),
     };
 
     // Flow cards - Conditions
@@ -50,7 +51,17 @@ class UnraidDriver extends Homey.Driver {
       pauseVm: this.homey.flow.getActionCard('pause_vm'),
       resumeVm: this.homey.flow.getActionCard('resume_vm'),
       sendNotification: this.homey.flow.getActionCard('send_unraid_notification'),
+      forceRefresh: this.homey.flow.getActionCard('force_refresh'),
     };
+
+    // Register force refresh handler
+    this.actions.forceRefresh.registerRunListener(async (args, state) => {
+      this.log('🔄 Force refresh triggered via Flow!');
+      const device = args.device;
+      await device._poll();
+      this.log('✅ Force refresh complete!');
+      return true;
+    });
 
     // Register autocomplete for container/VM names
     this._registerAutocomplete();
@@ -119,6 +130,7 @@ class UnraidDriver extends Homey.Driver {
           pollShares: false,
           cpuThreshold: 80,
           diskTempThreshold: 60,
+          shareSpaceThreshold: 90,
           allowControl: false,
         },
       }];
