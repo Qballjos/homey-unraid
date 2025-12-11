@@ -1,0 +1,8 @@
+# Default code owners for all files
+* @Qballjos
+
+# Specific areas
+/drivers/ @Qballjos
+/lib/ @Qballjos
+/.github/ @Qballjos
+
