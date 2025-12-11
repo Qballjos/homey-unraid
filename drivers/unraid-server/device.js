@@ -140,8 +140,17 @@ class UnraidDevice extends Homey.Device {
 
   async _applySettings(settings) {
     this.settings = settings;
-    this.client = new UnraidGraphQLClient({ baseUrl: settings.baseUrl, apiKey: settings.apiKey });
     this.pollIntervalMs = Math.max(10, settings.pollInterval || 30) * 1000;
+    
+    // Only create client if URL and API key are configured
+    if (settings.baseUrl && settings.apiKey && settings.baseUrl !== 'http://tower:8080/graphql') {
+      this.client = new UnraidGraphQLClient({ baseUrl: settings.baseUrl, apiKey: settings.apiKey });
+      this.log('Client configured with URL:', settings.baseUrl);
+    } else {
+      this.client = null;
+      this.log('Device not yet configured - please set URL and API key in settings');
+      await this.setUnavailable('Please configure URL and API key in device settings');
+    }
   }
 
   _schedulePoll(reset = false) {
@@ -163,6 +172,12 @@ class UnraidDevice extends Homey.Device {
   }
 
   async _poll() {
+    // Skip polling if not configured yet
+    if (!this.client) {
+      this.log('Skipping poll - device not configured');
+      return;
+    }
+    
     const query = this._buildQuery();
     const data = await this.client.request(query);
     this.setAvailable();
