@@ -99,33 +99,6 @@ class UnraidDriver extends Homey.Driver {
     });
   }
 
-  async onPairListDevices() {
-    this.log('onPairListDevices called');
-    
-    // Return a device that user can select
-    const device = {
-      name: 'Unraid Server',
-      data: {
-        id: `unraid-${Date.now()}`,
-      },
-      settings: {
-        baseUrl: 'http://tower:8080/graphql',
-        apiKey: '',
-        pollInterval: 60,
-        pollArray: true,
-        pollDocker: true,
-        pollVms: true,
-        pollShares: false,
-        cpuThreshold: 80,
-        diskTempThreshold: 60,
-        allowControl: false,
-      },
-    };
-    
-    this.log('Returning device:', device.name);
-    return [device];
-  }
-
   async _getContainerAutocomplete(query) {
     const results = [];
     const devices = this.getDevices();
