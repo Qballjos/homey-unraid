@@ -77,20 +77,8 @@ class UnraidDevice extends Homey.Device {
       // Remove CPU temperature
       await this.removeCapability('measure_cpu_temperature').catch(this.error);
 
-      // Find where to insert it (after memory, or after CPU if memory doesn't exist)
-      const memoryIndex = this.getCapabilities().indexOf('measure_memory');
-      const cpuIndex = this.getCapabilities().indexOf('measure_cpu');
-
-      let targetIndex = -1;
-      if (memoryIndex !== -1) {
-        targetIndex = memoryIndex + 1;
-      } else if (cpuIndex !== -1) {
-        targetIndex = cpuIndex + 1;
-      } else {
-        targetIndex = 0;
-      }
-
-      // Re-add CPU temperature at the correct position
+      // Re-add CPU temperature (SDK v3 doesn't support position argument)
+      // The capability order is defined in app.json
       await this.addCapability('measure_cpu_temperature').catch(this.error);
 
       // Set current value
@@ -311,17 +299,17 @@ class UnraidDevice extends Homey.Device {
     // System metrics from 'metrics' type (has 'cpu' and 'memory' fields)
     if (metrics) {
       // Metrics received (CPU & Memory)
-      
+
       if (metrics.cpu?.percentTotal !== null && metrics.cpu?.percentTotal !== undefined) {
         const cpuPercent = Math.round(metrics.cpu.percentTotal);
         this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);
         this.lastState.cpuPercent = cpuPercent;
-        
+
         if (cpuPercent >= (this.settings.thresholds?.cpuThreshold || 90)) {
           this.driver.triggers.cpuOver.trigger(this, { percent: cpuPercent }).catch(this.error);
         }
       }
-      
+
       if (metrics.memory?.percentTotal !== null && metrics.memory?.percentTotal !== undefined) {
         const memPercent = Math.round(metrics.memory.percentTotal);
         this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
@@ -331,7 +319,7 @@ class UnraidDevice extends Homey.Device {
     // Info data (uptime, CPU temp)
     if (info) {
       // Info received (OS & CPU)
-      
+
       // Uptime (API returns boot time as ISO date string)
       if (info.os?.uptime) {
         try {
@@ -345,7 +333,7 @@ class UnraidDevice extends Homey.Device {
           this.error('Failed to parse uptime:', error);
         }
       }
-      
+
       // CPU Temperature (from packages.temp array)
       if (info.cpu?.packages?.temp && Array.isArray(info.cpu.packages.temp) && info.cpu.packages.temp.length > 0) {
         // Use the first package temp (or could use max if multiple packages)
@@ -490,7 +478,7 @@ class UnraidDevice extends Homey.Device {
           delete this.lastState.containers[name];
         }
       });
-      
+
       if (this.hasCapability('measure_containers')) {
         this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
       }
@@ -567,7 +555,7 @@ class UnraidDevice extends Homey.Device {
           delete this.lastState.vms[name];
         }
       });
-      
+
       if (this.hasCapability('measure_vms')) {
         this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
       }
@@ -636,6 +624,7 @@ class UnraidDevice extends Homey.Device {
 
     shares.forEach((share) => {
       // Validate all required fields (use == null to allow 0 but reject undefined/null)
+      // eslint-disable-next-line eqeqeq
       if (!share.name || !share.size || share.size === 0 || share.used == null || share.free == null) {
         return;
       }

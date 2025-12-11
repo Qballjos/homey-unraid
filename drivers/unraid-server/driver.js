@@ -59,7 +59,7 @@ class UnraidDriver extends Homey.Driver {
     };
 
     // Register force refresh handler
-    this.actions.forceRefresh.registerRunListener(async (args, state) => {
+    this.actions.forceRefresh.registerRunListener(async (args) => {
       this.log('🔄 Force refresh triggered via Flow!');
       const device = args.device;
       await device._poll();
