@@ -100,75 +100,31 @@ class UnraidDriver extends Homey.Driver {
   }
 
   async onPair(session) {
-    let credentials = {};
-
-    session.setHandler('login', async (data) => {
-      try {
-        // Store credentials
-        credentials = {
-          baseUrl: data.username,
-          apiKey: data.password,
-        };
-
-        // Validate URL format
-        if (!credentials.baseUrl.includes('/graphql')) {
-          throw new Error('URL must end with /graphql (e.g. http://192.168.1.100:8080/graphql)');
-        }
-
-        // Test connection
-        const GraphQLClient = require('../../lib/graphql');
-        const client = new GraphQLClient(credentials.baseUrl, credentials.apiKey);
-        const testQuery = '{ system { hostname uptime } }';
-        const result = await client.request(testQuery);
-
-        if (!result || !result.system) {
-          throw new Error('Could not connect to Unraid server');
-        }
-
-        // Success!
-        return true;
-      } catch (error) {
-        this.error('Pairing failed:', error.message);
-        throw new Error(`Connection failed: ${error.message}`);
-      }
-    });
+    this.log('Pairing started');
 
     session.setHandler('list_devices', async () => {
-      try {
-        // Fetch server info
-        const GraphQLClient = require('../../lib/graphql');
-        const client = new GraphQLClient(credentials.baseUrl, credentials.apiKey);
-        const query = '{ system { hostname version } }';
-        const result = await client.request(query);
-
-        const hostname = result?.system?.hostname || 'Unraid Server';
-        const version = result?.system?.version || 'Unknown';
-
-        return [{
-          name: hostname,
-          data: {
-            id: hostname.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-          },
-          settings: {
-            baseUrl: credentials.baseUrl,
-            apiKey: credentials.apiKey,
-            pollInterval: 60,
-            pollArray: true,
-            pollDocker: true,
-            pollVms: true,
-            pollShares: false,
-            cpuThreshold: 80,
-            diskTempThreshold: 60,
-            allowControl: false,
-          },
-          store: {
-            version: version,
-          },
-        }];
-      } catch (error) {
-        this.error('Failed to list devices:', error.message);
-        throw new Error(`Failed to get server info: ${error.message}`);
-      }
+      this.log('list_devices called');
+      
+      // Return a generic Unraid Server device
+      // User will configure URL and API key in device settings
+      return [{
+        name: 'Unraid Server',
+        data: {
+          id: `unraid-${Date.now()}`,
+        },
+        settings: {
+          baseUrl: 'http://tower:8080/graphql',
+          apiKey: '',
+          pollInterval: 60,
+          pollArray: true,
+          pollDocker: true,
+          pollVms: true,
+          pollShares: false,
+          cpuThreshold: 80,
+          diskTempThreshold: 60,
+          allowControl: false,
+        },
+      }];
     });
   }
 

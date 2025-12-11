@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-12-11
+
+### 🔧 Changed
+- **Simplified pairing flow**: Device can now be added immediately
+  - No credentials required during pairing
+  - Configure URL and API key in device settings after adding
+  - Faster device setup process
+  - More user-friendly workflow
+
+### Why This Change
+The login_credentials template was causing pairing issues.
+New approach: Add device first, configure settings second.
+
 ## [0.3.1] - 2025-12-11
 
 ### 🐛 Fixed
