@@ -253,11 +253,19 @@ class UnraidDevice extends Homey.Device {
     }
 
     // Uptime (from 'info { os { uptime } }')
-    if (info?.os?.uptime !== null && info?.os?.uptime !== undefined) {
+    // Note: API returns boot time as ISO date string, not seconds!
+    if (info?.os?.uptime) {
       this.log('Info received:', JSON.stringify(info));
-      const uptimeHours = Math.round((info.os.uptime / 3600) * 10) / 10;
-      this.log(`Uptime: ${info.os.uptime}s → ${uptimeHours}h`);
-      this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
+      try {
+        const bootTime = new Date(info.os.uptime);
+        const now = new Date();
+        const uptimeMs = now - bootTime;
+        const uptimeHours = Math.round((uptimeMs / 3600000) * 10) / 10; // ms to hours
+        this.log(`Boot time: ${info.os.uptime} → Uptime: ${uptimeHours}h`);
+        this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
+      } catch (error) {
+        this.error('Failed to parse uptime:', error);
+      }
     }
 
     // Array status and metrics (based on UnraidArray schema)
