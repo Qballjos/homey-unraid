@@ -218,13 +218,13 @@ class UnraidDevice extends Homey.Device {
       }`);
     }
     if (this.settings.pollDocker) {
-      parts.push('docker { containers { id names state status autoStart isUpdateAvailable } }');
+      parts.push('docker { containers { id names state status autoStart } }');
     }
     if (this.settings.pollVms) {
       parts.push('vms { domains { id name state } }');
     }
     if (this.settings.pollShares) {
-      parts.push('shares { name fsFree fsUsed fsSize }');
+      parts.push('shares { name free used size }');
     }
     return `query { ${parts.join(' ')} }`;
   }
