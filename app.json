@@ -12,10 +12,10 @@
   "name": {
     "en": "Unraid"
   },
-  "icon": "/assets/icon-small.png",
+  "icon": "/assets/UNRAID/icon.png",
   "images": {
-    "small": "/assets/icon-small.png",
-    "large": "/assets/icon-large.png"
+    "small": "/assets/UNRAID/logo.png",
+    "large": "/assets/UNRAID/logo.png"
   },
   "brandColor": "#10b981",
   "description": {
@@ -169,8 +169,8 @@
       },
       "class": "other",
       "images": {
-        "large": "/drivers/unraid-server/assets/icon-large.png",
-        "small": "/drivers/unraid-server/assets/icon-small.png"
+        "large": "/assets/UNRAID/icon.png",
+        "small": "/assets/UNRAID/icon.png"
       },
       "capabilities": [
         "measure_cpu",
