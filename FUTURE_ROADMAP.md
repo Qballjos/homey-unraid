@@ -86,15 +86,15 @@
 #### Device Capabilities
 - [ ] **Network throughput** (up/down in MB/s) - If API exposes
 - [ ] **Disk I/O rate** (read/write MB/s) - If API exposes
-- [ ] **Parity progress** (%) - During parity check
+- [x] **Parity progress** (%) - During parity check ✅ v0.3.0
 - [ ] **Mover progress** (%) - During mover operation
-- [ ] **Array errors count** - Number of disk errors
+- [x] **Array errors count** - Number of disk errors ✅ v0.3.0
 - [ ] **Cache free space** (GB) - Absolute value
 - [ ] **Share free space** (GB) - For largest share
 - [ ] **Container restart count** - Today/week
 
 #### Better Container/VM Selection
-- [ ] **Autocomplete dropdown** - Populate from current containers/VMs
+- [x] **Autocomplete dropdown** - Populate from current containers/VMs ✅ v0.3.0
 - [ ] **Device selection** - Pick from discovered containers/VMs
 - [ ] **Tag/filter support** - Group containers by label
 - [ ] **Favorite containers** - Quick access list

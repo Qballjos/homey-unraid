@@ -31,6 +31,8 @@ class UnraidDevice extends Homey.Device {
       measure_memory: 0,
       measure_temperature: 0,
       measure_disk_usage: 0,
+      measure_parity_progress: 0,
+      meter_array_errors: 0,
       measure_containers: 0,
       measure_vms: 0,
       meter_uptime: 0,
@@ -248,6 +250,13 @@ class UnraidDevice extends Homey.Device {
       this.lastState.parityPercent = array.parity?.percent ?? null;
       this.lastState.parityErrors = parityErrors;
 
+      // Update parity progress capability
+      const parityProgress = array.parity?.percent || 0;
+      this.setCapabilityValue('measure_parity_progress', parityProgress).catch(this.error);
+
+      // Update array errors capability
+      this.setCapabilityValue('meter_array_errors', parityErrors).catch(this.error);
+
       // Mover tracking
       const moverNow = array.mover?.running || false;
       if (moverNow && !this.lastState.moverRunning) {
@@ -311,6 +320,8 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('array_status', 'not monitored').catch(this.error);
       this.setCapabilityValue('measure_disk_usage', 0).catch(this.error);
       this.setCapabilityValue('measure_temperature', 0).catch(this.error);
+      this.setCapabilityValue('measure_parity_progress', 0).catch(this.error);
+      this.setCapabilityValue('meter_array_errors', 0).catch(this.error);
       this.setCapabilityValue('alarm_generic', false).catch(this.error);
     }
 

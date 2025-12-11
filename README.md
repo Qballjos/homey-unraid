@@ -10,6 +10,8 @@ Comprehensive Homey app for monitoring and controlling Unraid servers via the of
 - **Memory Used** - RAM usage (%)
 - **Disk Temperature** - Maximum disk temperature (°C)
 - **Array Space Used** - Cache pool usage (%)
+- **Parity Progress** - Live parity check progress (%) ✨ NEW
+- **Array Errors** - Error count from parity checks ✨ NEW
 - **Containers Running** - Number of active Docker containers
 - **VMs Running** - Number of active virtual machines
 - **Uptime** - Server uptime (hours)
@@ -36,9 +38,11 @@ Comprehensive Homey app for monitoring and controlling Unraid servers via the of
 ### 🎮 Full Control (16 Actions)
 - Array management (start/stop, parity check control)
 - Cache mover control (start/stop)
-- Docker containers (start/stop/restart/update)
-- Virtual machines (start/stop/reboot/pause/resume)
+- Docker containers (start/stop/restart/update) with **autocomplete** ✨
+- Virtual machines (start/stop/reboot/pause/resume) with **autocomplete** ✨
 - Notifications with severity levels (normal/warning/alert)
+
+> **New**: Container and VM names are now auto-populated from your server—no more typing!
 
 ### 🔧 Advanced Conditions (7)
 - Check array/parity/mover status

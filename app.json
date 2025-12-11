@@ -94,6 +94,27 @@
       "getable": true,
       "setable": false,
       "uiComponent": null
+    },
+    "measure_parity_progress": {
+      "type": "number",
+      "title": { "en": "Parity Progress" },
+      "units": { "en": "%" },
+      "min": 0,
+      "max": 100,
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "meter_array_errors": {
+      "type": "number",
+      "title": { "en": "Array Errors" },
+      "units": { "en": "errors" },
+      "min": 0,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
     }
   },
   "platforms": [
@@ -115,6 +136,8 @@
         "measure_memory",
         "measure_temperature",
         "measure_disk_usage",
+        "measure_parity_progress",
+        "meter_array_errors",
         "measure_containers",
         "measure_vms",
         "meter_uptime",
@@ -221,13 +244,21 @@
         "id": "container_is_running",
         "title": { "en": "Container is running" },
         "titleFormatted": { "en": "Container [[name]] is running" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "Container name" }
+        }]
       },
       {
         "id": "vm_is_running",
         "title": { "en": "VM is running" },
         "titleFormatted": { "en": "VM [[name]] is running" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "parity_in_progress",
@@ -285,55 +316,91 @@
         "id": "start_container",
         "title": { "en": "Start container" },
         "titleFormatted": { "en": "Start container [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "Container name" }
+        }]
       },
       {
         "id": "stop_container",
         "title": { "en": "Stop container" },
         "titleFormatted": { "en": "Stop container [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "Container name" }
+        }]
       },
       {
         "id": "restart_container",
         "title": { "en": "Restart container" },
         "titleFormatted": { "en": "Restart container [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "Container name" }
+        }]
       },
       {
         "id": "update_container",
         "title": { "en": "Update container (pull image)" },
         "titleFormatted": { "en": "Update container [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "Container name" }
+        }]
       },
       {
         "id": "start_vm",
         "title": { "en": "Start VM" },
         "titleFormatted": { "en": "Start VM [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "stop_vm",
         "title": { "en": "Stop VM" },
         "titleFormatted": { "en": "Stop VM [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "reboot_vm",
         "title": { "en": "Reboot VM" },
         "titleFormatted": { "en": "Reboot VM [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "pause_vm",
         "title": { "en": "Pause VM" },
         "titleFormatted": { "en": "Pause VM [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "resume_vm",
         "title": { "en": "Resume VM" },
         "titleFormatted": { "en": "Resume VM [[name]]" },
-        "args": [{ "name": "name", "type": "text" }]
+        "args": [{
+          "name": "name",
+          "type": "autocomplete",
+          "placeholder": { "en": "VM name" }
+        }]
       },
       {
         "id": "send_unraid_notification",

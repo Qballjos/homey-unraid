@@ -51,6 +51,90 @@ class UnraidDriver extends Homey.Driver {
       resumeVm: this.homey.flow.getActionCard('resume_vm'),
       sendNotification: this.homey.flow.getActionCard('send_unraid_notification'),
     };
+
+    // Register autocomplete for container/VM names
+    this._registerAutocomplete();
+  }
+
+  _registerAutocomplete() {
+    // Container name autocomplete for conditions
+    this.conditions.containerIsRunning.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getContainerAutocomplete(query);
+    });
+
+    // Container name autocomplete for actions
+    this.actions.startContainer.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getContainerAutocomplete(query);
+    });
+    this.actions.stopContainer.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getContainerAutocomplete(query);
+    });
+    this.actions.restartContainer.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getContainerAutocomplete(query);
+    });
+    this.actions.updateContainer.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getContainerAutocomplete(query);
+    });
+
+    // VM name autocomplete for conditions
+    this.conditions.vmIsRunning.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+
+    // VM name autocomplete for actions
+    this.actions.startVm.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+    this.actions.stopVm.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+    this.actions.rebootVm.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+    this.actions.pauseVm.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+    this.actions.resumeVm.registerArgumentAutocompleteListener('name', async (query) => {
+      return this._getVmAutocomplete(query);
+    });
+  }
+
+  async _getContainerAutocomplete(query) {
+    const results = [];
+    const devices = this.getDevices();
+
+    for (const device of devices) {
+      const containers = device.lastState?.containers || {};
+      for (const [name, container] of Object.entries(containers)) {
+        if (!query || name.toLowerCase().includes(query.toLowerCase())) {
+          results.push({
+            name: name,
+            description: `State: ${container.state || 'unknown'}`,
+          });
+        }
+      }
+    }
+
+    return results.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async _getVmAutocomplete(query) {
+    const results = [];
+    const devices = this.getDevices();
+
+    for (const device of devices) {
+      const vms = device.lastState?.vms || {};
+      for (const [name, vm] of Object.entries(vms)) {
+        if (!query || name.toLowerCase().includes(query.toLowerCase())) {
+          results.push({
+            name: name,
+            description: `State: ${vm.state || 'unknown'}`,
+          });
+        }
+      }
+    }
+
+    return results.sort((a, b) => a.name.localeCompare(b.name));
   }
 }
 
