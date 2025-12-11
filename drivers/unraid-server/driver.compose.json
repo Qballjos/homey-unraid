@@ -13,8 +13,6 @@
     "large": "/drivers/unraid-server/assets/icon-large.png",
     "small": "/drivers/unraid-server/assets/icon-small.png"
   },
-  "connectivity": [],
-  "platforms": ["local"],
   "settings": [
     {
       "id": "baseUrl",
