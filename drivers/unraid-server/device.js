@@ -205,20 +205,18 @@ class UnraidDevice extends Homey.Device {
     const parts = [];
 
     // Based on https://docs.unraid.net/API/how-to-use-the-api/
-    // Start with minimal query - memory fields might not exist
+    // Query with confirmed working fields
     parts.push('info { os { uptime platform } cpu { manufacturer brand cores } }');
+    
     if (domains.pollArray) {
-      parts.push('array { status parity { inProgress percent errors } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
+      // Per API docs example
+      parts.push('array { state capacity { disks { free used total } } disks { name size status temp } }');
     }
     if (domains.pollDocker) {
-      parts.push('dockerContainers { names state status autoStart }');
+      // Per API docs example
+      parts.push('dockerContainers { id names state status autoStart }');
     }
-    if (domains.pollVms) {
-      parts.push('vms { name state }');
-    }
-    if (domains.pollShares) {
-      parts.push('shares { name free used }');
-    }
+    // Skip VMs and Shares for now until we verify field names
     return `query { ${parts.join(' ')} }`;
   }
 
