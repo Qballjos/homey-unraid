@@ -362,7 +362,7 @@ class UnraidDevice extends Homey.Device {
     if (docker?.containers) {
       this.log('Docker received:', JSON.stringify(docker));
       const containers = docker.containers;
-      const runningContainers = containers.filter(c => c.state === 'running').length;
+      const runningContainers = containers.filter(c => c.state === 'RUNNING').length;
       this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
 
       containers.forEach(c => {
