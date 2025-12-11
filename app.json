@@ -64,6 +64,18 @@
       "insights": true,
       "uiComponent": "sensor"
     },
+    "measure_temperature": {
+      "type": "number",
+      "title": { "en": "Disk Temperature" },
+      "units": { "en": "°C" },
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor"
+    },
     "measure_disk_usage": {
       "type": "number",
       "title": { "en": "Array Space Used" },
