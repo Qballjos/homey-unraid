@@ -324,30 +324,73 @@
       {
         "id": "container_crashed",
         "title": { "en": "Container crashed" },
-        "titleFormatted": { "en": "Container [[name]] crashed (exit [[code]])" },
+        "titleFormatted": { "en": "Container [[container_name]] crashed (exit [[exit_code]])" },
         "tokens": [
-          { "name": "name", "type": "string", "title": { "en": "Container" } },
-          { "name": "code", "type": "number", "title": { "en": "Exit code" } }
+          { "name": "container_name", "type": "string", "title": { "en": "Container name" } },
+          { "name": "exit_code", "type": "number", "title": { "en": "Exit code" } },
+          { "name": "status", "type": "string", "title": { "en": "Status text" } },
+          { "name": "auto_start", "type": "boolean", "title": { "en": "Auto-start enabled" } }
         ]
       },
       {
         "id": "container_state_changed",
         "title": { "en": "Container state changed" },
-        "titleFormatted": { "en": "Container [[name]] changed from [[from]] to [[to]]" },
-        "args": [
-          { "name": "name", "type": "text" },
-          { "name": "from", "type": "text" },
-          { "name": "to", "type": "text" }
+        "titleFormatted": { "en": "Container [[container_name]] changed to [[new_state]]" },
+        "tokens": [
+          { "name": "container_name", "type": "string", "title": { "en": "Container name" } },
+          { "name": "old_state", "type": "string", "title": { "en": "Previous state" } },
+          { "name": "new_state", "type": "string", "title": { "en": "Current state" } },
+          { "name": "status", "type": "string", "title": { "en": "Status text" } },
+          { "name": "auto_start", "type": "boolean", "title": { "en": "Auto-start enabled" } }
+        ]
+      },
+      {
+        "id": "container_started",
+        "title": { "en": "Container started" },
+        "titleFormatted": { "en": "Container [[container_name]] started" },
+        "tokens": [
+          { "name": "container_name", "type": "string", "title": { "en": "Container name" } },
+          { "name": "status", "type": "string", "title": { "en": "Status text" } },
+          { "name": "auto_start", "type": "boolean", "title": { "en": "Auto-start enabled" } }
+        ]
+      },
+      {
+        "id": "container_stopped",
+        "title": { "en": "Container stopped" },
+        "titleFormatted": { "en": "Container [[container_name]] stopped" },
+        "tokens": [
+          { "name": "container_name", "type": "string", "title": { "en": "Container name" } },
+          { "name": "status", "type": "string", "title": { "en": "Status text" } },
+          { "name": "was_auto_start", "type": "boolean", "title": { "en": "Had auto-start" } }
         ]
       },
       {
         "id": "vm_state_changed",
         "title": { "en": "VM state changed" },
-        "titleFormatted": { "en": "VM [[name]] changed from [[from]] to [[to]]" },
-        "args": [
-          { "name": "name", "type": "text" },
-          { "name": "from", "type": "text" },
-          { "name": "to", "type": "text" }
+        "titleFormatted": { "en": "VM [[vm_name]] changed to [[new_state]]" },
+        "tokens": [
+          { "name": "vm_name", "type": "string", "title": { "en": "VM name" } },
+          { "name": "old_state", "type": "string", "title": { "en": "Previous state" } },
+          { "name": "new_state", "type": "string", "title": { "en": "Current state" } },
+          { "name": "vm_id", "type": "string", "title": { "en": "VM ID" } }
+        ]
+      },
+      {
+        "id": "vm_started",
+        "title": { "en": "VM started" },
+        "titleFormatted": { "en": "VM [[vm_name]] started" },
+        "tokens": [
+          { "name": "vm_name", "type": "string", "title": { "en": "VM name" } },
+          { "name": "vm_id", "type": "string", "title": { "en": "VM ID" } }
+        ]
+      },
+      {
+        "id": "vm_stopped",
+        "title": { "en": "VM stopped" },
+        "titleFormatted": { "en": "VM [[vm_name]] stopped" },
+        "tokens": [
+          { "name": "vm_name", "type": "string", "title": { "en": "VM name" } },
+          { "name": "vm_id", "type": "string", "title": { "en": "VM ID" } }
         ]
       },
       {

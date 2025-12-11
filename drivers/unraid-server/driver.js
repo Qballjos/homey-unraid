@@ -16,8 +16,12 @@ class UnraidDriver extends Homey.Driver {
       diskTempWarning: this.homey.flow.getTriggerCard('disk_temp_warning'),
       smartFailure: this.homey.flow.getTriggerCard('smart_failure'),
       containerChanged: this.homey.flow.getTriggerCard('container_state_changed'),
+      containerStarted: this.homey.flow.getTriggerCard('container_started'),
+      containerStopped: this.homey.flow.getTriggerCard('container_stopped'),
       containerCrashed: this.homey.flow.getTriggerCard('container_crashed'),
       vmChanged: this.homey.flow.getTriggerCard('vm_state_changed'),
+      vmStarted: this.homey.flow.getTriggerCard('vm_started'),
+      vmStopped: this.homey.flow.getTriggerCard('vm_stopped'),
       cpuOver: this.homey.flow.getTriggerCard('cpu_over_threshold'),
       shareSpaceLow: this.homey.flow.getTriggerCard('share_space_low'),
     };

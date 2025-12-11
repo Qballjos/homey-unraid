@@ -394,22 +394,55 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
 
       containers.forEach(c => {
-        // API returns 'names' as array, use first name
-        const containerName = Array.isArray(c.names) ? c.names[0] : c.names;
+        // API returns 'names' as array, use first name (remove leading slash)
+        const containerName = (Array.isArray(c.names) ? c.names[0] : c.names).replace(/^\//, '');
         const prev = this.lastState.containers[containerName];
+
+        // Prepare common token data
+        const tokens = {
+          container_name: containerName,
+          status: c.status || '',
+          auto_start: c.autoStart || false,
+        };
 
         // Container state changed
         if (prev && prev.state !== c.state) {
-          this.driver.triggers.containerChanged.trigger(this, { name: containerName, from: prev.state, to: c.state }).catch(this.error);
+          this.log(`🐳 Container "${containerName}" changed: ${prev.state} → ${c.state}`);
+
+          // General state change trigger
+          this.driver.triggers.containerChanged.trigger(this, {
+            ...tokens,
+            old_state: prev.state,
+            new_state: c.state,
+          }).catch(this.error);
+
+          // Specific state triggers
+          if (c.state === 'RUNNING' && prev.state !== 'RUNNING') {
+            this.log(`✅ Container "${containerName}" started`);
+            this.driver.triggers.containerStarted.trigger(this, tokens).catch(this.error);
+          } else if (c.state !== 'RUNNING' && prev.state === 'RUNNING') {
+            this.log(`⏸️ Container "${containerName}" stopped`);
+            this.driver.triggers.containerStopped.trigger(this, {
+              container_name: containerName,
+              status: c.status || '',
+              was_auto_start: prev.autoStart || false,
+            }).catch(this.error);
+          }
 
           // Container crashed (not running with non-zero exit code)
           if (c.state !== 'RUNNING' && c.exitCode && c.exitCode !== 0) {
-            this.driver.triggers.containerCrashed.trigger(this, { name: containerName, code: c.exitCode }).catch(this.error);
+            this.log(`❌ Container "${containerName}" crashed with exit code ${c.exitCode}`);
+            this.driver.triggers.containerCrashed.trigger(this, {
+              ...tokens,
+              exit_code: c.exitCode,
+            }).catch(this.error);
           }
         }
 
         this.lastState.containers[containerName] = {
           state: c.state,
+          status: c.status,
+          autoStart: c.autoStart,
           restartCount: c.restartCount || 0,
           exitCode: c.exitCode,
         };
@@ -428,9 +461,34 @@ class UnraidDevice extends Homey.Device {
 
       domains.forEach(vm => {
         const prev = this.lastState.vms[vm.name];
+
+        // Prepare common token data
+        const tokens = {
+          vm_name: vm.name,
+          vm_id: vm.id,
+        };
+
+        // VM state changed
         if (prev && prev.state !== vm.state) {
-          this.driver.triggers.vmChanged.trigger(this, { name: vm.name, from: prev.state, to: vm.state }).catch(this.error);
+          this.log(`💻 VM "${vm.name}" changed: ${prev.state} → ${vm.state}`);
+
+          // General state change trigger
+          this.driver.triggers.vmChanged.trigger(this, {
+            ...tokens,
+            old_state: prev.state,
+            new_state: vm.state,
+          }).catch(this.error);
+
+          // Specific state triggers
+          if (vm.state === 'RUNNING' && prev.state !== 'RUNNING') {
+            this.log(`✅ VM "${vm.name}" started`);
+            this.driver.triggers.vmStarted.trigger(this, tokens).catch(this.error);
+          } else if (vm.state !== 'RUNNING' && prev.state === 'RUNNING') {
+            this.log(`⏸️ VM "${vm.name}" stopped`);
+            this.driver.triggers.vmStopped.trigger(this, tokens).catch(this.error);
+          }
         }
+
         this.lastState.vms[vm.name] = vm;
       });
     } else {
