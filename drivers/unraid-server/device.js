@@ -13,10 +13,32 @@ class UnraidDevice extends Homey.Device {
       cpuPercent: null,
     };
 
+    await this._initializeCapabilities();
     await this._applySettings(this.getSettings());
     this._schedulePoll();
     this._registerActionHandlers();
     this._registerConditionHandlers();
+  }
+
+  async _initializeCapabilities() {
+    // Initialize all capabilities with default values to prevent undefined state
+    const defaults = {
+      measure_cpu: 0,
+      measure_memory: 0,
+      measure_temperature: 0,
+      measure_disk_usage: 0,
+      measure_containers: 0,
+      measure_vms: 0,
+      meter_uptime: 0,
+      array_status: 'unknown',
+      alarm_generic: false,
+    };
+
+    for (const [cap, value] of Object.entries(defaults)) {
+      if (this.hasCapability(cap) && this.getCapabilityValue(cap) === null) {
+        await this.setCapabilityValue(cap, value).catch(this.error);
+      }
+    }
   }
 
   async onSettings({ newSettings }) {
@@ -201,6 +223,12 @@ class UnraidDevice extends Homey.Device {
       } else {
         this.setCapabilityValue('alarm_generic', false).catch(this.error);
       }
+    } else {
+      // Array polling disabled - set unavailable status
+      this.setCapabilityValue('array_status', 'not monitored').catch(this.error);
+      this.setCapabilityValue('measure_disk_usage', 0).catch(this.error);
+      this.setCapabilityValue('measure_temperature', 0).catch(this.error);
+      this.setCapabilityValue('alarm_generic', false).catch(this.error);
     }
 
     // Docker containers
@@ -215,6 +243,9 @@ class UnraidDevice extends Homey.Device {
         }
         this.lastState.containers[c.name] = c;
       });
+    } else {
+      // Docker polling disabled
+      this.setCapabilityValue('measure_containers', 0).catch(this.error);
     }
 
     // Virtual machines
@@ -229,6 +260,9 @@ class UnraidDevice extends Homey.Device {
         }
         this.lastState.vms[vm.name] = vm;
       });
+    } else {
+      // VM polling disabled
+      this.setCapabilityValue('measure_vms', 0).catch(this.error);
     }
 
     this.lastState.shares = shares;
