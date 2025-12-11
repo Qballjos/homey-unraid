@@ -261,9 +261,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow and guidelines.
 ## Roadmap
 See [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) for planned features and implementation status.
 
-## Support
-- **Issues**: [GitHub Issues](https://github.com/Qballjos/homey-unraid/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Qballjos/homey-unraid/discussions)
+## Support & Community
+
+### 💬 GitHub Discussions
+Join the community! [View Discussions](https://github.com/Qballjos/homey-unraid/discussions)
+
+- **🙋 Need Help?** Ask in [Q&A](https://github.com/Qballjos/homey-unraid/discussions/categories/q-a)
+- **💡 Have an Idea?** Share in [Ideas](https://github.com/Qballjos/homey-unraid/discussions/categories/ideas)
+- **🎨 Built Something Cool?** Show off in [Show & Tell](https://github.com/Qballjos/homey-unraid/discussions/categories/show-and-tell)
+- **📢 Stay Updated**: Watch [Announcements](https://github.com/Qballjos/homey-unraid/discussions/categories/announcements)
+
+See the [Discussion Guide](DISCUSSIONS_GUIDE.md) for templates and guidelines.
+
+### 🐛 Bug Reports
+Found a bug? [Create an Issue](https://github.com/Qballjos/homey-unraid/issues)
 
 ## License
 MIT © [Jos Visser](https://josvisserict.nl)
