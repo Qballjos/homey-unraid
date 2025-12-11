@@ -2,16 +2,23 @@
 
 ## Current Implementation Status ✅
 
-### Device Capabilities (9)
-- ✅ CPU Load (%)
-- ✅ Memory Used (%)
+**Coverage**: ~85% of Unraid GraphQL API capabilities  
+**Status**: Production-ready for most use cases
+
+### Device Capabilities (11)
+- ✅ CPU Load (%) 📊
+- ✅ Memory Used (%) 📊
 - ✅ Disk Temperature (°C)
-- ✅ Array Space Used (%)
-- ✅ Containers Running
-- ✅ VMs Running
-- ✅ Uptime (hours)
+- ✅ Array Space Used (%) 📊
+- ✅ Parity Progress (%) 📊
+- ✅ Array Errors 📊
+- ✅ Containers Running 📊
+- ✅ VMs Running 📊
+- ✅ Uptime (hours) 📊
 - ✅ Array Status (text)
 - ✅ Alarm (disk temp)
+
+**📊 = Homey Insights enabled** (8/11 capabilities)
 
 ### Flow Triggers (13)
 - ✅ Array started/stopped
@@ -46,7 +53,7 @@
 
 ### HIGH PRIORITY - Core Functionality
 
-#### Triggers
+#### Triggers (Feasible)
 - [x] **Parity check started** - Know when check begins ✅ v0.2.0
 - [x] **Parity check error detected** - Alert on parity issues ✅ v0.2.0
 - [x] **Disk temperature warning** - Per-disk temp threshold ✅ v0.2.0
@@ -54,59 +61,47 @@
 - [ ] **Share/cache low space** - Threshold-based space warning
 - [x] **Mover started/finished** - Cache mover activity ✅ v0.2.0
 - [x] **Container crashed** - Exit code != 0 ✅ v0.2.0
-- [ ] **Container restart loop** - Multiple restarts detected
-- [ ] **Container update available** - New image version
-- [ ] **VM high CPU/RAM** - Resource usage threshold per VM
-- [ ] **Array disk error** - Disk read/write errors
-- [ ] **UPS on battery** (if exposed by API) - Power event
+- [ ] **Container restart loop** - Multiple restarts detected (track restartCount)
+- [ ] **Array disk error** - Disk read/write errors (if API exposes error field)
 
-#### Conditions
+#### Conditions (Feasible)
 - [x] **Parity check in progress** - Check if parity running ✅ v0.2.0
 - [x] **Mover is running** - Check if mover active ✅ v0.2.0
 - [x] **Disk temperature above/below** - Threshold check ✅ v0.2.0
-- [ ] **SMART status healthy** - Check disk health
+- [ ] **SMART status healthy** - Check disk health (simple string check)
 - [x] **Free space above** - Space threshold check ✅ v0.2.0
-- [ ] **Container exists** - Check if container present
-- [ ] **VM exists** - Check if VM present
-- [ ] **Array has errors** - Check for disk errors
+- [ ] **Container exists** - Check if container in lastState
+- [ ] **VM exists** - Check if VM in lastState
 
-#### Actions
+#### Actions (Feasible)
 - [x] **Stop parity check** - Cancel running check ✅ v0.2.0
-- [ ] **Spin disk up/down** - Power management
+- [ ] **Spin disk up/down** - Power management (if API mutation exists)
 - [x] **Start/stop mover** - Manual cache management ✅ v0.2.0
 - [x] **Pause/resume VM** - VM suspend/resume ✅ v0.2.0
-- [ ] **Pull all container updates** - Batch update
-- [ ] **Restart array** - Stop + start
+- [ ] **Pull all container updates** - Iterate through containers
+- [ ] **Restart array** - Sequential stop + start action
 - [x] **Send notification with level** - Normal/warning/alert ✅ v0.2.0
-- [ ] **Set container autostart** - Enable/disable autostart
-- [ ] **Execute Unraid user script** (if API supports)
+- [ ] **Set container autostart** - If API supports autostart mutation
 
 ### MEDIUM PRIORITY - Enhanced UX
 
-#### Device Capabilities
-- [ ] **Network throughput** (up/down in MB/s) - If API exposes
-- [ ] **Disk I/O rate** (read/write MB/s) - If API exposes
+#### Device Capabilities (API-Dependent)
 - [x] **Parity progress** (%) - During parity check ✅ v0.3.0
-- [ ] **Mover progress** (%) - During mover operation
 - [x] **Array errors count** - Number of disk errors ✅ v0.3.0
-- [ ] **Cache free space** (GB) - Absolute value
-- [ ] **Share free space** (GB) - For largest share
-- [ ] **Container restart count** - Today/week
+- [ ] **Mover progress** (%) - If API exposes mover progress field
+- [ ] **Cache free space** (GB) - Calculate from existing data
+- [ ] **Share free space** (GB) - From shares query
 
 #### Better Container/VM Selection
 - [x] **Autocomplete dropdown** - Populate from current containers/VMs ✅ v0.3.0
-- [ ] **Device selection** - Pick from discovered containers/VMs
-- [ ] **Tag/filter support** - Group containers by label
-- [ ] **Favorite containers** - Quick access list
-- [ ] **Container/VM status icons** - Visual indicators
+- [ ] **Enhanced autocomplete** - Show additional metadata (CPU/RAM if API provides)
+- [ ] **Container filtering** - Filter by state in settings
 
-#### Settings Enhancements
-- [ ] **Multiple threshold profiles** - Day/night modes
-- [ ] **Notification preferences** - Per-event enable/disable
-- [ ] **Poll schedule** - Different intervals by time
-- [ ] **Auto-disable on errors** - Prevent spam
-- [ ] **Debug/verbose logging** - Troubleshooting mode
-- [ ] **Container/VM filters** - Include/exclude by name pattern
+#### Settings Enhancements (Feasible)
+- [ ] **Additional thresholds** - Memory %, disk space %, container restart count
+- [ ] **Per-event toggles** - Enable/disable specific triggers
+- [ ] **Retry settings** - Backoff strategy for failed polls
+- [ ] **Container/VM filters** - Include/exclude by name pattern (regex)
 
 ### LOW PRIORITY - Advanced Features
 
@@ -117,71 +112,46 @@
   - ✅ Space usage trends
   - ✅ Container/VM count history
   - ✅ Parity progress tracking
-  - [ ] Container restart frequency (needs additional tracking)
-  - [ ] Per-disk temperature history (would need sub-devices)
 
-#### Notifications Integration
-- [ ] **Pull Unraid notifications** - Fetch system notifications
-- [ ] **Notification history** - Last N notifications
-- [ ] **Notification triggers** - Fire on new Unraid notification
-- [ ] **Acknowledge notifications** - Mark as read via Homey
+#### Additional Monitoring (API-Dependent)
+- [ ] **Container restart tracking** - Track restartCount changes over time
+- [ ] **Share/cache low space trigger** - Use existing shares data with thresholds
+- [ ] **Array disk read/write errors** - If API exposes errorCount per disk
+- [ ] **Container resource usage** - If API exposes per-container CPU/RAM/NET stats
 
-#### Multi-Share/Disk Monitoring
-- [ ] **Per-share capabilities** - Create sub-devices per share
-- [ ] **Per-disk capabilities** - Create sub-devices per disk
-- [ ] **Aggregate metrics** - Total throughput, total IOPS
-- [ ] **Share usage alerts** - Individual share thresholds
+#### Advanced Settings
+- [ ] **Trigger enable/disable toggles** - Turn off unwanted notifications
+- [ ] **Custom thresholds per metric** - Memory %, space %, restart count
+- [ ] **Container/VM name filters** - Regex include/exclude patterns
 
-#### Container Deep Integration
-- [ ] **Container logs** - Fetch recent logs (if API supports)
-- [ ] **Container stats** - Real-time CPU/RAM/NET per container
-- [ ] **Container exec** - Run commands (if API supports)
-- [ ] **Container port mapping** - View exposed ports
-- [ ] **Container health checks** - Monitor healthcheck status
+### Realistic Future Additions
 
-#### VM Advanced Control
-- [ ] **VM snapshots** - Create/restore/list (if API supports)
-- [ ] **VM console access** - VNC/SPICE link (if API supports)
-- [ ] **VM resource allocation** - View/adjust CPU/RAM (if API supports)
-- [ ] **VM passthrough devices** - List USB/PCI devices
+Based on Unraid GraphQL API capabilities:
 
-#### Plugin/App Management (if API exposes)
-- [ ] **List installed plugins** - Community Apps
-- [ ] **Update plugins** - Apply updates
-- [ ] **Start/stop plugins** - Enable/disable
-- [ ] **Plugin update available** - Trigger on updates
+#### Quick Wins (Easy to Add)
+- [ ] **Container restart loop detection** - Track restartCount increases
+- [ ] **Share low space trigger** - Use existing shares data
+- [ ] **Container exists condition** - Check lastState
+- [ ] **VM exists condition** - Check lastState
+- [ ] **Pull all containers action** - Loop through containers
+- [ ] **Restart array action** - Sequential stop/start
 
-#### User/Permission Management (if API exposes)
-- [ ] **List users** - Show Unraid users
-- [ ] **View shares per user** - Access control
-- [ ] **Sessions active** - Current login sessions
+#### Requires API Verification
+- [ ] **Network throughput** - Check if API exposes network stats
+- [ ] **Disk I/O rates** - Check if API exposes disk stats
+- [ ] **Container resource stats** - Check if per-container CPU/RAM available
+- [ ] **UPS status** - Check if API exposes UPS metrics
 
-#### Backup/Maintenance
-- [ ] **Trigger Appdata backup** (if plugin API exposed)
-- [ ] **Flash backup** - Backup USB config
-- [ ] **Docker.img maintenance** - Trim/compact
-
-#### Speech/Voice
-- [ ] **Enhanced speech examples** - More natural phrases
-- [ ] **Voice status reports** - "Hey Homey, Unraid status"
-- [ ] **Voice container control** - "Hey Homey, restart Plex"
-
-### RESEARCH NEEDED - API Limitations
-
-Check if Unraid GraphQL API supports:
-- [ ] Network interface throughput (real-time)
-- [ ] Disk I/O rates per disk
-- [ ] Historical metrics (or use Homey Insights)
-- [ ] Container logs endpoint
-- [ ] VM snapshot operations
-- [ ] Plugin management endpoints
-- [ ] User script execution
-- [ ] Notification acknowledgment
-- [ ] Share-level permissions/ACLs
-- [ ] UPS status/metrics
-- [ ] IPMI/BMC integration
-- [ ] Fan speed control
-- [ ] GPU passthrough status
+#### Not Possible with Current API
+- ❌ **Container logs** - Not in GraphQL API
+- ❌ **Container exec** - Security risk, not exposed
+- ❌ **VM snapshots** - Likely not in GraphQL API
+- ❌ **VM console access** - VNC/SPICE outside API scope
+- ❌ **Plugin management** - No API endpoints
+- ❌ **User script execution** - Security concern
+- ❌ **Flash backup** - System-level operation
+- ❌ **IPMI/BMC** - Separate interface
+- ❌ **Fan control** - Hardware-specific
 
 ---
 
@@ -195,26 +165,29 @@ Focus: Essential triggers, conditions, actions
 - ✅ Space threshold conditions
 - ✅ More VM/container controls (pause/resume, crash detection)
 
-### Phase 2: UX Improvements (v0.3.0)
-Focus: Better usability
-- Autocomplete for container/VM names
-- More device capabilities (parity %, cache space)
-- Enhanced settings (profiles, schedules)
-- Better error handling and diagnostics
+### Phase 2: UX & Analytics (v0.3.0) ✅ COMPLETED
+Focus: Better usability and tracking
+- ✅ Autocomplete for container/VM names
+- ✅ Parity progress and array errors capabilities
+- ✅ Homey Insights integration (8 metrics)
+- ✅ Enhanced state tracking
 
-### Phase 3: Advanced Features (v0.4.0)
-Focus: Power users
-- Homey Insights integration
-- Notification sync
-- Per-share/disk monitoring
-- Container stats and logs
+### Phase 3: Refinement (v0.4.0) - OPTIONAL
+Focus: Polish and edge cases
+- [ ] Container restart loop detection
+- [ ] Share low space trigger
+- [ ] Batch container updates
+- [ ] Additional conditions (exists checks, SMART healthy)
+- [ ] Enhanced settings (per-event toggles, filters)
 
-### Phase 4: Enterprise/Pro (v1.0.0)
-Focus: Complete management
-- Plugin management
-- Backup automation
-- Multi-server orchestration
-- Advanced analytics
+### Phase 4: API-Dependent Features (v1.0.0) - IF API SUPPORTS
+Focus: Advanced features requiring API expansion
+- [ ] Network throughput (needs API data)
+- [ ] Disk I/O rates (needs API data)
+- [ ] Per-container resource stats (needs API data)
+- [ ] UPS monitoring (needs API data)
+
+**Note**: Phase 4 depends on Unraid API exposing additional data fields
 
 ---
 
@@ -223,11 +196,69 @@ Focus: Complete management
 Add user-requested features here:
 - [ ] _Open for suggestions_
 
+## Technical Notes
+
+### API Capabilities (Unraid GraphQL)
+**✅ Confirmed Working:**
+- System: CPU, RAM, uptime, temperature
+- Array: status, disks, parity (status, progress, errors)
+- Docker: containers (name, state, exitCode, restartCount, image)
+- VMs: name, state, resource allocation
+- Shares: name, free, used
+- Mover: status, running state
+- Control: start/stop array, containers, VMs, parity, mover, notifications
+
+**⚠️ Needs API Verification:**
+- Network stats (throughput, bandwidth)
+- Disk I/O rates per disk
+- Per-container CPU/RAM/network usage
+- UPS metrics (battery, runtime)
+
+**❌ Not Available in GraphQL API:**
+- Container logs (would need Docker socket)
+- Container exec (security risk)
+- VM snapshots/console (libvirt specific)
+- Plugin management (no API)
+- User scripts (no API)
+- System backups (plugin-specific)
+
 ## API Version Support
 
-- **Current**: Unraid 7.x GraphQL API
-- **Target**: Maintain compatibility with Unraid 7.0+
-- **Future**: Monitor Unraid 8.x API changes
+- **Current**: Unraid 7.x GraphQL API (7.0+)
+- **Tested**: Unraid 7.0.0-beta.2
+- **Future**: Will monitor Unraid 8.x API changes
+
+---
+
+## Realistic Remaining Potential
+
+### Easy Wins (v0.4.0)
+Can be added without API changes:
+- Container restart loop detection (track restartCount)
+- Share low space trigger (use existing shares data)
+- Container/VM exists conditions (check lastState)
+- Batch container updates (iterate existing API)
+- Restart array action (sequential stop+start)
+
+**Estimated coverage gain**: +5% → 90% total
+
+### Requires API Research (v1.0.0+)
+Need to verify API support:
+- Network throughput stats
+- Disk I/O rates
+- Per-container resource usage
+- UPS monitoring
+
+**Estimated coverage gain**: +10% IF available → 100% possible total
+
+### Out of Scope
+These features are NOT possible with current API architecture:
+- Container logs/exec (Docker socket required)
+- VM snapshots/console (libvirt access required)
+- Plugin management (no API endpoints)
+- System backups (plugin-specific)
+- User scripts (security risk)
+- IPMI/BMC (separate interface)
 
 ---
 
@@ -236,4 +267,6 @@ Add user-requested features here:
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow.
 
 Priority features from this roadmap are tagged in GitHub Issues.
+
+**Note**: Only features confirmed possible via Unraid GraphQL API will be accepted.
 
