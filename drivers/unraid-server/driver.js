@@ -99,7 +99,7 @@ class UnraidDriver extends Homey.Driver {
     });
   }
 
-  onPairListDevices() {
+  async onPairListDevices() {
     this.log('🔥 onPairListDevices called!');
     const devices = [{
       name: 'Unraid Server',
