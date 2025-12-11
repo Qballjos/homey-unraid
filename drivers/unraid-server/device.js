@@ -204,8 +204,8 @@ class UnraidDevice extends Homey.Device {
     const { domains = {} } = this.settings;
     const parts = [];
 
-    // Based on GraphQL schema: Metrics has 'cpu' and 'memory' fields
-    parts.push('metrics { cpu { currentLoad } memory { used total } }');
+    // Based on GraphQL schema: Metrics.cpu and Metrics.memory
+    parts.push('metrics { cpu { percentTotal } memory { percentTotal used total } }');
     parts.push('info { os { uptime } }');
 
     if (domains.pollArray) {
@@ -232,8 +232,8 @@ class UnraidDevice extends Homey.Device {
     if (metrics) {
       this.log('Metrics received:', JSON.stringify(metrics));
       
-      if (metrics.cpu?.currentLoad !== null && metrics.cpu?.currentLoad !== undefined) {
-        const cpuPercent = Math.round(metrics.cpu.currentLoad);
+      if (metrics.cpu?.percentTotal !== null && metrics.cpu?.percentTotal !== undefined) {
+        const cpuPercent = Math.round(metrics.cpu.percentTotal);
         this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);
         this.lastState.cpuPercent = cpuPercent;
         
@@ -242,8 +242,8 @@ class UnraidDevice extends Homey.Device {
         }
       }
       
-      if (metrics.memory?.used && metrics.memory?.total) {
-        const memPercent = Math.round((metrics.memory.used / metrics.memory.total) * 100);
+      if (metrics.memory?.percentTotal !== null && metrics.memory?.percentTotal !== undefined) {
+        const memPercent = Math.round(metrics.memory.percentTotal);
         this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
       }
     }
