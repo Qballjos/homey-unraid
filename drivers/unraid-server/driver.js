@@ -100,31 +100,39 @@ class UnraidDriver extends Homey.Driver {
   }
 
   async onPair(session) {
-    this.log('Pairing started');
+    this.log('Pairing session started');
 
     session.setHandler('list_devices', async () => {
-      this.log('list_devices called');
+      this.log('list_devices handler called');
       
-      // Return a generic Unraid Server device
-      // User will configure URL and API key in device settings
-      return [{
-        name: 'Unraid Server',
-        data: {
-          id: `unraid-${Date.now()}`,
-        },
-        settings: {
-          baseUrl: 'http://tower:8080/graphql',
-          apiKey: '',
-          pollInterval: 60,
-          pollArray: true,
-          pollDocker: true,
-          pollVms: true,
-          pollShares: false,
-          cpuThreshold: 80,
-          diskTempThreshold: 60,
-          allowControl: false,
-        },
-      }];
+      try {
+        // Return a generic Unraid Server device
+        // User will configure URL and API key in device settings after adding
+        const devices = [{
+          name: 'Unraid Server',
+          data: {
+            id: `unraid-${Date.now()}`,
+          },
+          settings: {
+            baseUrl: 'http://tower:8080/graphql',
+            apiKey: '',
+            pollInterval: 60,
+            pollArray: true,
+            pollDocker: true,
+            pollVms: true,
+            pollShares: false,
+            cpuThreshold: 80,
+            diskTempThreshold: 60,
+            allowControl: false,
+          },
+        }];
+        
+        this.log('Returning devices:', JSON.stringify(devices));
+        return devices;
+      } catch (error) {
+        this.error('Error in list_devices:', error);
+        throw error;
+      }
     });
   }
 
