@@ -195,7 +195,9 @@ class UnraidDevice extends Homey.Device {
     }
 
     const query = this._buildQuery();
+    this.log('📤 Query:', query);
     const data = await this.client.request(query);
+    this.log('📥 Full response:', JSON.stringify(Object.keys(data)));
     this.setAvailable();
     this._updateState(data);
   }
@@ -259,6 +261,7 @@ class UnraidDevice extends Homey.Device {
 
     // Array status and metrics (based on UnraidArray schema)
     if (array) {
+      this.log('Array received:', JSON.stringify(array));
       const started = array.state === 'STARTED';
       if (this.lastState.arrayStarted !== null && this.lastState.arrayStarted !== started) {
         const trig = started ? this.driver.triggers.arrayStarted : this.driver.triggers.arrayStopped;
@@ -358,6 +361,7 @@ class UnraidDevice extends Homey.Device {
 
     // Docker containers (from 'docker { containers }')
     if (docker?.containers) {
+      this.log('Docker received:', JSON.stringify(docker));
       const containers = docker.containers;
       const runningContainers = containers.filter(c => c.state === 'running').length;
       this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
@@ -390,6 +394,7 @@ class UnraidDevice extends Homey.Device {
 
     // Virtual machines (from 'vms { domains }')
     if (vms?.domains) {
+      this.log('VMs received:', JSON.stringify(vms));
       const domains = vms.domains;
       const runningVms = domains.filter(vm => vm.state === 'running').length;
       this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
