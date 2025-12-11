@@ -9,6 +9,26 @@
     "email": "qballjos@gmail.com",
     "url": "https://josvisserict.nl"
   },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Jos Visser",
+        "email": "qballjos@gmail.com"
+      }
+    ],
+    "translators": []
+  },
+  "contributing": {
+    "donate": {
+      "url": "https://github.com/sponsors/Qballjos"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/Qballjos/homey-unraid/issues"
+  },
+  "homepage": "https://github.com/Qballjos/homey-unraid",
+  "support": "https://github.com/Qballjos/homey-unraid/discussions",
+  "source": "https://github.com/Qballjos/homey-unraid",
   "name": {
     "en": "Unraid"
   },
