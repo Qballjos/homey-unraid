@@ -23,29 +23,13 @@ class UnraidDevice extends Homey.Device {
       this.log('🔥 Step 1: Initialize capabilities');
       await this._initializeCapabilities();
 
-      this.log('🔥 Step 2: Set capability order');
-      await this.setCapabilityOrder([
-        'measure_cpu',
-        'measure_cpu_temperature',
-        'measure_memory',
-        'measure_temperature',
-        'measure_disk_usage',
-        'measure_parity_progress',
-        'meter_array_errors',
-        'measure_containers',
-        'measure_vms',
-        'meter_uptime',
-        'array_status',
-        'alarm_generic',
-      ]).catch(this.error);
-
-      this.log('🔥 Step 3: Apply settings');
+      this.log('🔥 Step 2: Apply settings');
       await this._applySettings(this.getSettings());
 
-      this.log('🔥 Step 4: Schedule polling');
+      this.log('🔥 Step 3: Schedule polling');
       this._schedulePoll();
 
-      this.log('🔥 Step 5: Register handlers');
+      this.log('🔥 Step 4: Register handlers');
       this._registerActionHandlers();
       this._registerConditionHandlers();
 
