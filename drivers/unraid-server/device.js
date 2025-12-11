@@ -45,6 +45,7 @@ class UnraidDevice extends Homey.Device {
     const defaults = {
       measure_cpu: 0,
       measure_memory: 0,
+      measure_cpu_temperature: 0,
       measure_temperature: 0,
       measure_disk_usage: 0,
       measure_parity_progress: 0,
@@ -207,7 +208,7 @@ class UnraidDevice extends Homey.Device {
 
     // Based on GraphQL schema - all field names confirmed!
     parts.push('metrics { cpu { percentTotal } memory { percentTotal used total } }');
-    parts.push('info { os { uptime } }');
+    parts.push('info { os { uptime } cpu { packages { temp } } }');
 
     if (this.settings.pollArray) {
       parts.push(`array {
@@ -252,19 +253,30 @@ class UnraidDevice extends Homey.Device {
       }
     }
 
-    // Uptime (from 'info { os { uptime } }')
-    // Note: API returns boot time as ISO date string, not seconds!
-    if (info?.os?.uptime) {
+    // Info data (uptime, CPU temp)
+    if (info) {
       this.log('Info received:', JSON.stringify(info));
-      try {
-        const bootTime = new Date(info.os.uptime);
-        const now = new Date();
-        const uptimeMs = now - bootTime;
-        const uptimeHours = Math.round((uptimeMs / 3600000) * 10) / 10;
-        this.log(`Boot time: ${info.os.uptime} → Uptime: ${uptimeHours}h`);
-        this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
-      } catch (error) {
-        this.error('Failed to parse uptime:', error);
+      
+      // Uptime (API returns boot time as ISO date string)
+      if (info.os?.uptime) {
+        try {
+          const bootTime = new Date(info.os.uptime);
+          const now = new Date();
+          const uptimeMs = now - bootTime;
+          const uptimeHours = Math.round((uptimeMs / 3600000) * 10) / 10;
+          this.log(`Boot time: ${info.os.uptime} → Uptime: ${uptimeHours}h`);
+          this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
+        } catch (error) {
+          this.error('Failed to parse uptime:', error);
+        }
+      }
+      
+      // CPU Temperature (from packages.temp array)
+      if (info.cpu?.packages?.temp && Array.isArray(info.cpu.packages.temp) && info.cpu.packages.temp.length > 0) {
+        // Use the first package temp (or could use max if multiple packages)
+        const cpuTemp = Math.round(info.cpu.packages.temp[0]);
+        this.log(`CPU Temperature: ${cpuTemp}°C (package 0)`);
+        this.setCapabilityValue('measure_cpu_temperature', cpuTemp).catch(this.error);
       }
     }
 
