@@ -316,14 +316,9 @@ See the [Discussion Guide](DISCUSSIONS_GUIDE.md) for templates and guidelines.
 
 If you find this app useful, consider buying me a coffee! Your support helps keep this project maintained and improved.
 
-<form action="https://www.paypal.com/donate" method="post" target="_top">
-<input type="hidden" name="business" value="P8CTXW8ER3PBY" />
-<input type="hidden" name="no_recurring" value="0" />
-<input type="hidden" name="item_name" value="voor zn koffie ;-)" />
-<input type="hidden" name="currency_code" value="EUR" />
-<input type="image" src="https://www.paypalobjects.com/en_US/NL/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_NL/i/scr/pixel.gif" width="1" height="1" />
-</form>
+[![Donate](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
+
+**Direct PayPal Link:** [Donate via PayPal](https://www.paypal.com/donate?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
 
 ### 🐛 Bug Reports
 Found a bug? [Create an Issue](https://github.com/Qballjos/homey-unraid/issues)
