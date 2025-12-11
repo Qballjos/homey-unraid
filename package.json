@@ -9,7 +9,7 @@
   "scripts": {
     "validate": "homey app validate --level publish",
     "run": "homey app run",
-    "install": "homey app install",
+    "deploy": "homey app install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "node test-local.js",
