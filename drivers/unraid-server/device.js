@@ -203,14 +203,13 @@ class UnraidDevice extends Homey.Device {
   }
 
   _buildQuery() {
-    const { domains = {} } = this.settings;
     const parts = [];
 
     // Based on GraphQL schema - all field names confirmed!
     parts.push('metrics { cpu { percentTotal } memory { percentTotal used total } }');
     parts.push('info { os { uptime } }');
 
-    if (domains.pollArray) {
+    if (this.settings.pollArray) {
       parts.push(`array {
         state
         capacity { disks { free used total } kilobytes { free used total } }
@@ -218,13 +217,13 @@ class UnraidDevice extends Homey.Device {
         parityCheckStatus { running progress errors status paused speed }
       }`);
     }
-    if (domains.pollDocker) {
+    if (this.settings.pollDocker) {
       parts.push('docker { containers { id names state status autoStart isUpdateAvailable } }');
     }
-    if (domains.pollVms) {
+    if (this.settings.pollVms) {
       parts.push('vms { domains { id name state } }');
     }
-    if (domains.pollShares) {
+    if (this.settings.pollShares) {
       parts.push('shares { name fsFree fsUsed fsSize }');
     }
     return `query { ${parts.join(' ')} }`;
