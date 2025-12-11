@@ -17,7 +17,7 @@
     "small": "/assets/image-small.png",
     "large": "/assets/image-large.png"
   },
-  "brandColor": "#10b981",
+  "brandColor": "#E22828",
   "description": {
     "en": "Lightweight monitoring and control for your Unraid server via the official GraphQL API."
   },
