@@ -164,6 +164,59 @@
           "id": "add_devices",
           "template": "add_devices"
         }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": { "en": "Connection" },
+          "children": [
+            {
+              "id": "baseUrl",
+              "type": "text",
+              "label": { "en": "Server URL" },
+              "hint": { "en": "http://192.168.1.100:8080/graphql" },
+              "value": "http://tower:8080/graphql"
+            },
+            {
+              "id": "apiKey",
+              "type": "password",
+              "label": { "en": "API Key" },
+              "hint": { "en": "From Unraid Settings → API" },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": { "en": "Polling" },
+          "children": [
+            {
+              "id": "pollInterval",
+              "type": "number",
+              "label": { "en": "Interval (seconds)" },
+              "value": 60,
+              "attr": { "min": 10, "max": 300, "step": 5 }
+            },
+            { "id": "pollArray", "type": "checkbox", "label": { "en": "Poll Array & Disks" }, "value": true },
+            { "id": "pollDocker", "type": "checkbox", "label": { "en": "Poll Docker" }, "value": true },
+            { "id": "pollVms", "type": "checkbox", "label": { "en": "Poll VMs" }, "value": true },
+            { "id": "pollShares", "type": "checkbox", "label": { "en": "Poll Shares" }, "value": false }
+          ]
+        },
+        {
+          "type": "group",
+          "label": { "en": "Thresholds" },
+          "children": [
+            { "id": "cpuThreshold", "type": "number", "label": { "en": "CPU %" }, "value": 80, "attr": { "min": 10, "max": 100 } },
+            { "id": "diskTempThreshold", "type": "number", "label": { "en": "Disk Temp °C" }, "value": 60, "attr": { "min": 20, "max": 90 } }
+          ]
+        },
+        {
+          "id": "allowControl",
+          "type": "checkbox",
+          "label": { "en": "Allow control actions (start/stop)" },
+          "value": false
+        }
       ]
     }
   ],
