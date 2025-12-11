@@ -205,31 +205,40 @@ class UnraidDevice extends Homey.Device {
     const parts = [];
 
     // Based on https://docs.unraid.net/API/how-to-use-the-api/
-    // Query with confirmed working fields
-    parts.push('info { os { uptime platform } cpu { manufacturer brand cores } }');
-    
+    // System metrics from 'metrics' type (has CPU and memory utilization)
+    parts.push('metrics { cpuUtilization { currentLoad } memoryUtilization { used total } }');
+    parts.push('info { os { uptime } }');
+
     if (domains.pollArray) {
-      // Per API docs example
       parts.push('array { state capacity { disks { free used total } } disks { name size status temp } }');
     }
     if (domains.pollDocker) {
-      // Per API docs example
       parts.push('dockerContainers { id names state status autoStart }');
     }
-    // Skip VMs and Shares for now until we verify field names
     return `query { ${parts.join(' ')} }`;
   }
 
   _updateState(data) {
-    const { info, array, dockerContainers, vms, shares } = data;
+    const { metrics, info, array, dockerContainers, vms, shares } = data;
 
-    // System metrics (using 'info' per Unraid API docs)
-    if (info) {
-      // Note: Memory fields need to be discovered
-      // For now, set to 0 (will fix once we know the schema)
-      this.setCapabilityValue('measure_cpu', 0).catch(this.error);
-      this.setCapabilityValue('measure_memory', 0).catch(this.error);
-      this.log('Info received:', JSON.stringify(info));
+    // System metrics from 'metrics' type
+    if (metrics) {
+      this.log('Metrics received:', JSON.stringify(metrics));
+      
+      if (metrics.cpuUtilization?.currentLoad !== null && metrics.cpuUtilization?.currentLoad !== undefined) {
+        const cpuPercent = Math.round(metrics.cpuUtilization.currentLoad);
+        this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);
+        this.lastState.cpuPercent = cpuPercent;
+        
+        if (cpuPercent >= (this.settings.thresholds?.cpuThreshold || 90)) {
+          this.driver.triggers.cpuOver.trigger(this, { percent: cpuPercent }).catch(this.error);
+        }
+      }
+      
+      if (metrics.memoryUtilization?.used && metrics.memoryUtilization?.total) {
+        const memPercent = Math.round((metrics.memoryUtilization.used / metrics.memoryUtilization.total) * 100);
+        this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
+      }
     }
 
     // Uptime
