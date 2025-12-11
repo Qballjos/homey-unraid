@@ -1,10 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#111827"/>
-  <path d="M14 24h22v6H14z" fill="#10b981"/>
-  <path d="M14 34h36v6H14z" fill="#06b6d4"/>
-  <path d="M14 44h28v6H14z" fill="#8b5cf6"/>
-  <circle cx="48" cy="27" r="3" fill="#f59e0b"/>
-  <circle cx="52" cy="37" r="3" fill="#f59e0b"/>
-  <circle cx="44" cy="47" r="3" fill="#f59e0b"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="350" viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="350" fill="#111827"/>
+  <g transform="translate(250, 175)">
+    <!-- Server rack icon -->
+    <rect x="-100" y="-80" width="200" height="160" rx="8" fill="#10b981" opacity="0.2"/>
+    <rect x="-90" y="-60" width="180" height="35" rx="4" fill="#10b981"/>
+    <rect x="-90" y="-15" width="180" height="35" rx="4" fill="#10b981"/>
+    <rect x="-90" y="30" width="180" height="35" rx="4" fill="#10b981"/>
+    <!-- Status indicators -->
+    <circle cx="-70" cy="-42" r="4" fill="#22c55e"/>
+    <circle cx="-70" cy="3" r="4" fill="#22c55e"/>
+    <circle cx="-70" cy="48" r="4" fill="#22c55e"/>
+  </g>
+  <text x="250" y="320" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#10b981" text-anchor="middle">UNRAID</text>
 </svg>
 

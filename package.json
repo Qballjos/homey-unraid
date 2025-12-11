@@ -1,6 +1,6 @@
 {
   "name": "com.unraid",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lightweight Homey app to monitor and control an Unraid server via the official GraphQL API.",
   "main": "app.js",
   "engines": {

@@ -1,7 +1,7 @@
 {
   "_comment": "Homey app manifest for Unraid integration",
   "id": "com.unraid",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatibility": ">=6.0.0",
   "sdk": 3,
   "author": {

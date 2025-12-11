@@ -7,19 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- **7 new triggers**: parity started/error, mover started/finished, disk temp warning, SMART failure, container crashed
-- **4 new conditions**: parity in progress, mover running, disk temp above, free space above
-- **5 new actions**: stop parity check, start/stop mover, pause/resume VM
-- Enhanced notification action with level selection (normal/warning/alert)
-- Per-disk temperature and SMART monitoring with historical tracking
-- Container crash detection (non-zero exit codes)
-- Mover activity tracking
-- Parity error detection and reporting
+## [0.2.0] - 2025-12-11
 
-### Changed
-- Updated GraphQL queries to include exit codes and parity errors
-- Enhanced state tracking for disks, parity, and mover
+### 🎉 Major Feature Release - HIGH PRIORITY Items
+
+#### Added
+**Triggers (7 new, 13 total)**
+- Parity check started - Detect when parity check begins
+- Parity check error - Alert when errors found (with error count token)
+- Mover started - Cache mover activity start
+- Mover finished - Cache mover completion
+- Disk temperature warning - Per-disk alerts with name & temp tokens
+- SMART failure detected - Critical disk health warnings
+- Container crashed - Exit code tracking (non-zero exits with code token)
+
+**Conditions (4 new, 7 total)**
+- Parity check in progress - Check if parity running
+- Mover is running - Check if mover active
+- Disk temperature above - Threshold check per disk
+- Free space above - Space threshold for shares/cache
+
+**Actions (5 new, 16 total)**
+- Stop parity check - Cancel running check
+- Start mover - Manually trigger cache mover
+- Stop mover - Cancel mover operation
+- Pause VM - Suspend virtual machine
+- Resume VM - Resume paused VM
+
+#### Enhanced
+- Send notification action now supports level selection (normal/warning/alert)
+- Per-disk temperature and SMART monitoring with historical comparison
+- Container crash detection with exit code tracking
+- Parity error counting and reporting
+- Mover activity start/stop detection
+
+#### Changed
+- GraphQL queries now fetch `exitCode` for containers
+- GraphQL queries now fetch parity `errors` count
+- State tracking expanded for disks, parity progress, mover status
+- Enhanced lastState management for trigger detection
+
+#### Fixed
+- CI pipeline failing due to npm lifecycle script conflict
+- Renamed `install` script to `deploy` to avoid npm conflicts
+
+### Technical Improvements
+- Comprehensive state diffing for accurate trigger detection
+- Historical disk state tracking (temperature, SMART status)
+- Container state tracking (exitCode, restartCount)
+- Parity progress and error tracking
+- Mover running state management
 
 ## [0.1.0] - 2025-12-11
 
@@ -66,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Control actions require explicit opt-in
 - No logging of sensitive credentials
 
-[Unreleased]: https://github.com/Qballjos/homey-unraid/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Qballjos/homey-unraid/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Qballjos/homey-unraid/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Qballjos/homey-unraid/releases/tag/v0.1.0
 

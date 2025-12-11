@@ -13,24 +13,32 @@
 - ✅ Array Status (text)
 - ✅ Alarm (disk temp)
 
-### Flow Triggers (6)
+### Flow Triggers (13)
 - ✅ Array started/stopped
-- ✅ Parity check completed
-- ✅ Container state changed
+- ✅ Parity check started/completed/error
+- ✅ Mover started/finished
+- ✅ Disk temperature warning
+- ✅ SMART failure detected
+- ✅ Container state changed/crashed
 - ✅ VM state changed
 - ✅ CPU over threshold
 
-### Flow Conditions (3)
+### Flow Conditions (7)
 - ✅ Array is started
+- ✅ Parity check in progress
+- ✅ Mover is running
+- ✅ Disk temperature above threshold
+- ✅ Free space above threshold
 - ✅ Container is running
 - ✅ VM is running
 
-### Flow Actions (11)
+### Flow Actions (16)
 - ✅ Start/stop array
-- ✅ Start parity check
+- ✅ Start/stop parity check
+- ✅ Start/stop mover
 - ✅ Start/stop/restart/update container (4)
-- ✅ Start/stop/reboot VM (3)
-- ✅ Send Unraid notification
+- ✅ Start/stop/reboot/pause/resume VM (5)
+- ✅ Send Unraid notification (with level)
 
 ---
 
@@ -39,13 +47,13 @@
 ### HIGH PRIORITY - Core Functionality
 
 #### Triggers
-- [ ] **Parity check started** - Know when check begins
-- [ ] **Parity check error detected** - Alert on parity issues
-- [ ] **Disk temperature warning** - Per-disk temp threshold
-- [ ] **SMART failure detected** - Critical disk health alert
+- [x] **Parity check started** - Know when check begins ✅ v0.2.0
+- [x] **Parity check error detected** - Alert on parity issues ✅ v0.2.0
+- [x] **Disk temperature warning** - Per-disk temp threshold ✅ v0.2.0
+- [x] **SMART failure detected** - Critical disk health alert ✅ v0.2.0
 - [ ] **Share/cache low space** - Threshold-based space warning
-- [ ] **Mover started/finished** - Cache mover activity
-- [ ] **Container crashed** - Exit code != 0
+- [x] **Mover started/finished** - Cache mover activity ✅ v0.2.0
+- [x] **Container crashed** - Exit code != 0 ✅ v0.2.0
 - [ ] **Container restart loop** - Multiple restarts detected
 - [ ] **Container update available** - New image version
 - [ ] **VM high CPU/RAM** - Resource usage threshold per VM
@@ -53,23 +61,23 @@
 - [ ] **UPS on battery** (if exposed by API) - Power event
 
 #### Conditions
-- [ ] **Parity check in progress** - Check if parity running
-- [ ] **Mover is running** - Check if mover active
-- [ ] **Disk temperature above/below** - Threshold check
+- [x] **Parity check in progress** - Check if parity running ✅ v0.2.0
+- [x] **Mover is running** - Check if mover active ✅ v0.2.0
+- [x] **Disk temperature above/below** - Threshold check ✅ v0.2.0
 - [ ] **SMART status healthy** - Check disk health
-- [ ] **Free space above** - Space threshold check
+- [x] **Free space above** - Space threshold check ✅ v0.2.0
 - [ ] **Container exists** - Check if container present
 - [ ] **VM exists** - Check if VM present
 - [ ] **Array has errors** - Check for disk errors
 
 #### Actions
-- [ ] **Stop parity check** - Cancel running check
+- [x] **Stop parity check** - Cancel running check ✅ v0.2.0
 - [ ] **Spin disk up/down** - Power management
-- [ ] **Start/stop mover** - Manual cache management
-- [ ] **Pause/resume VM** - VM suspend/resume
+- [x] **Start/stop mover** - Manual cache management ✅ v0.2.0
+- [x] **Pause/resume VM** - VM suspend/resume ✅ v0.2.0
 - [ ] **Pull all container updates** - Batch update
 - [ ] **Restart array** - Stop + start
-- [ ] **Send notification with level** - Info/warn/error/alert
+- [x] **Send notification with level** - Normal/warning/alert ✅ v0.2.0
 - [ ] **Set container autostart** - Enable/disable autostart
 - [ ] **Execute Unraid user script** (if API supports)
 
@@ -177,13 +185,13 @@ Check if Unraid GraphQL API supports:
 
 ## Implementation Phases
 
-### Phase 1: Core Expansion (v0.2.0)
+### Phase 1: Core Expansion (v0.2.0) ✅ COMPLETED
 Focus: Essential triggers, conditions, actions
-- Parity triggers (start/error)
-- Mover triggers and actions
-- Disk health triggers (SMART)
-- Space threshold conditions
-- More VM/container controls
+- ✅ Parity triggers (start/error)
+- ✅ Mover triggers and actions
+- ✅ Disk health triggers (SMART, temperature)
+- ✅ Space threshold conditions
+- ✅ More VM/container controls (pause/resume, crash detection)
 
 ### Phase 2: UX Improvements (v0.3.0)
 Focus: Better usability
