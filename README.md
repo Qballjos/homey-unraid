@@ -1,7 +1,9 @@
 # Unraid for Homey
 
-[![GitHub release](https://img.shields.io/github/v/release/Qballjos/homey-unraid)](https://github.com/Qballjos/homey-unraid/releases)
-[![License](https://img.shields.io/github/license/Qballjos/homey-unraid)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.4.2-blue)](https://github.com/Qballjos/homey-unraid/releases/tag/v0.4.2)
+[![Homey App Store](https://img.shields.io/badge/Homey-Test%20Build-orange)](https://homey.app/nl-nl/app/com.unraid/Unraid/test/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![GitHub](https://img.shields.io/github/stars/Qballjos/homey-unraid?style=social)](https://github.com/Qballjos/homey-unraid)
 
 Comprehensive Homey app for monitoring and controlling Unraid servers via the official GraphQL API (Unraid 7+). Monitor system health, manage Docker containers & VMs, track parity checks, and automate server operations—all from your Homey smart home.
 
