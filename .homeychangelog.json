@@ -13,5 +13,8 @@
   },
   "0.4.1": {
     "en": "🚀 Performance Update - Memory Optimization\n\n💾 OPTIMIZED:\n• Memory usage reduced by 43% (70MB → 40MB)\n• Faster performance with less garbage collection\n• Better stability - no memory leaks\n• Resource-friendly - comparable to other Homey apps\n\n🐛 FIXED:\n• Removed excessive logging that consumed memory\n• Optimized state storage for VMs and shares\n• Added automatic cleanup of deleted items\n• Improved efficiency on resource-constrained devices\n\n⚡ IMPACT:\n• Smoother operation on Homey Pro\n• More memory available for other apps\n• Better performance with many containers/VMs\n• No memory accumulation over time\n\nPerfect for servers with lots of containers! 💪"
+  },
+  "0.4.2": {
+    "en": "📚 Documentation & Polish Update\n\n📖 NEW DOCUMENTATION:\n• Complete Flow Cards Reference Guide (40 cards)\n• All triggers, conditions & actions documented\n• Real-world examples for every flow card\n• Quick reference tables by category\n• Advanced automation scenarios\n• Tips & best practices included\n\n✨ FLOW CARDS AVAILABLE:\n• 16 Triggers with rich flow tags\n• 7 Conditions for smart logic\n• 17 Actions for full control\n\n🎯 HIGHLIGHTS:\n• Share space alerts ({{free_gb}}, {{used_percent}})\n• Container events ({{container_name}}, {{status}})\n• VM automation ({{vm_name}}, {{vm_id}})\n• Force refresh for instant updates\n• Temperature monitoring (CPU & disks)\n• Parity & mover control\n\n📚 Perfect for discovering automation possibilities!\n\nAll flow cards work perfectly - now fully documented! 🚀"
   }
 }

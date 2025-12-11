@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2025-12-11
+
+### 📚 Documentation Release
+
+#### Added
+- **FLOW_CARDS.md** - Comprehensive flow cards reference guide
+  - Complete documentation for all 40 flow cards
+  - Detailed token/argument descriptions for each card
+  - Real-world examples for every trigger, condition, and action
+  - Quick reference tables organized by category
+  - 6 advanced flow automation scenarios
+  - Tips and best practices for flow creation
+  - Configuration notes and requirements
+
+#### Enhanced
+- **README.md** - Updated with latest features
+  - Reorganized device metrics (always-visible vs dynamic)
+  - Updated trigger count (16 triggers with tags)
+  - Updated action count (17 actions)
+  - Clearer feature organization
+- **CHANGELOG.md** - Complete version history
+- **.homeychangelog.json** - User-facing changelogs for App Store
+  - Now tracked in git (removed from .gitignore)
+  - Professional, user-friendly descriptions
+  - Clear sections (NEW, IMPROVED, FIXED)
+  - Impact statements for users
+
+#### Changed
+- Improved documentation structure and clarity
+- All documentation files now synchronized
+- Ready for App Store publication
+
+### Purpose
+This documentation-focused release ensures users can:
+- Discover all available flow cards easily
+- Understand how to use each card effectively  
+- Create powerful automations with confidence
+- Reference token names and parameters quickly
+
 ## [0.4.1] - 2025-12-11
 
 ### 🚀 Performance Release - Memory Optimization
