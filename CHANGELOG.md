@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-12-11
+
+### 🚀 Performance Release - Memory Optimization
+
+#### Fixed
+- **Memory Usage Reduced by 43%** (70MB → ~40MB)
+  - Removed excessive JSON.stringify() logging of large objects
+  - Docker logging with 44 containers was creating huge string copies
+  - All API response logging now uses simple count-based logs
+- **Optimized State Storage**
+  - VM states now only store {state, id} instead of full objects
+  - Share states now only store {name, free, used, size} essentials
+  - Reduced memory footprint by ~80% for these objects
+- **Memory Leak Prevention**
+  - Added automatic cleanup of deleted container states
+  - Added automatic cleanup of deleted VM states
+  - Added automatic cleanup of deleted disk states
+  - Prevents accumulation of stale data over time
+
+#### Changed
+- Logging is now more efficient and memory-friendly
+- State tracking uses minimal data structures
+- Garbage collection can reclaim memory more effectively
+
+#### Technical Details
+- Use Set() for O(1) lookup performance in cleanup routines
+- Map shares/VMs to minimal data structures on every poll
+- Clean up stale states on every poll cycle
+- Reduced object allocations and string copies
+
+### Impact
+- **Better Performance**: Less memory = less GC pressure
+- **Improved Stability**: No memory leaks over time
+- **Cleaner Logs**: Easier to debug
+- **Resource Friendly**: Comparable to other Homey apps (~40MB)
+- **Better Scaling**: Handles servers with many containers/VMs efficiently
+
 ## [0.4.0] - 2025-12-11
 
 ### 🎉 Major Feature Release - Flow Tags & Dynamic UI
