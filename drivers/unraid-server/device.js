@@ -508,7 +508,10 @@ class UnraidDevice extends Homey.Device {
     const threshold = this.settings.shareSpaceThreshold || 90;
 
     shares.forEach((share) => {
-      if (!share.name || !share.size || share.size === 0) return;
+      // Validate all required fields (use == null to allow 0 but reject undefined/null)
+      if (!share.name || !share.size || share.size === 0 || share.used == null || share.free == null) {
+        return;
+      }
 
       const usedPercent = Math.round((share.used / share.size) * 100);
       const freePercent = 100 - usedPercent;
