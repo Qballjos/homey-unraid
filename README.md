@@ -5,6 +5,33 @@
 
 Comprehensive Homey app for monitoring and controlling Unraid servers via the official GraphQL API (Unraid 7+). Monitor system health, manage Docker containers & VMs, track parity checks, and automate server operations—all from your Homey smart home.
 
+---
+
+## 🚀 Current Release
+
+**Version 0.4.2** - Documentation & Polish Update
+
+📦 **[Test Build Available on Homey App Store](https://homey.app/nl-nl/app/com.unraid/Unraid/test/)**
+
+### What's New in v0.4.2:
+- 📚 **Complete Flow Cards Documentation** - All 40 flow cards fully documented
+- 📖 **Real-World Examples** - Practical examples for every trigger, condition, and action
+- 🎯 **Quick Reference** - Organized tables by category
+- ✨ **Rich Flow Tags** - Share space alerts, container/VM events with detailed tokens
+- 🌡️ **Temperature Monitoring** - CPU & disk temperature automation
+- 💾 **Memory Optimized** - Only ~40MB RAM usage
+- 🔄 **Force Refresh** - Instant data updates via Flow action
+
+### Available Flow Cards:
+- **16 Triggers** with rich flow tags (container events, VM automation, share alerts, etc.)
+- **7 Conditions** for smart logic (status checks, temperature monitoring, etc.)
+- **17 Actions** for full control (array management, parity checks, container/VM control, etc.)
+
+📚 **[View Complete Flow Cards Reference](FLOW_CARDS.md)**  
+📝 **[View Full Changelog](CHANGELOG.md)**
+
+---
+
 ## Device Metrics (Displayed on Card)
 
 All metrics with 📊 support **Homey Insights** for historical tracking and graphs!
