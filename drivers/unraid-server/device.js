@@ -140,10 +140,10 @@ class UnraidDevice extends Homey.Device {
       return Promise.resolve(freePercent > args.threshold);
     });
     driver.conditions.containerIsRunning.registerRunListener((args) => Promise.resolve(
-      this.lastState.containers?.[args.name]?.state === 'running',
+      this.lastState.containers?.[args.name]?.state === 'RUNNING',
     ));
     driver.conditions.vmIsRunning.registerRunListener((args) => Promise.resolve(
-      this.lastState.vms?.[args.name]?.state === 'running',
+      this.lastState.vms?.[args.name]?.state === 'RUNNING',
     ));
   }
 
@@ -374,8 +374,8 @@ class UnraidDevice extends Homey.Device {
         if (prev && prev.state !== c.state) {
           this.driver.triggers.containerChanged.trigger(this, { name: containerName, from: prev.state, to: c.state }).catch(this.error);
 
-          // Container crashed (exited with non-zero code)
-          if (c.state === 'exited' && c.exitCode && c.exitCode !== 0) {
+          // Container crashed (not running with non-zero exit code)
+          if (c.state !== 'RUNNING' && c.exitCode && c.exitCode !== 0) {
             this.driver.triggers.containerCrashed.trigger(this, { name: containerName, code: c.exitCode }).catch(this.error);
           }
         }
@@ -395,7 +395,7 @@ class UnraidDevice extends Homey.Device {
     if (vms?.domains) {
       this.log('VMs received:', JSON.stringify(vms));
       const domains = vms.domains;
-      const runningVms = domains.filter(vm => vm.state === 'running').length;
+      const runningVms = domains.filter(vm => vm.state === 'RUNNING').length;
       this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
 
       domains.forEach(vm => {
