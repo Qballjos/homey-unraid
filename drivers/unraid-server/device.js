@@ -187,13 +187,14 @@ class UnraidDevice extends Homey.Device {
   async _updateCapabilityVisibility(settings) {
     this.log('👁️ Updating capability visibility based on poll settings');
 
-    // Map poll settings to their capabilities
+    // Map poll settings to their capabilities (using actual capability IDs from app.json)
     const capabilityMap = {
       pollArray: [
-        'measure_disk_temperature',
-        'measure_array_errors',
-        'measure_parity',
-        'measure_array_usage',
+        'measure_temperature',        // Disk temperature
+        'meter_array_errors',          // Array errors count
+        'measure_parity_progress',     // Parity check progress
+        'measure_disk_usage',          // Array disk usage
+        'array_status',                // Array state (STARTED/STOPPED)
       ],
       pollDocker: ['measure_containers'],
       pollVms: ['measure_vms'],
