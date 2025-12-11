@@ -5,7 +5,6 @@ node_modules/
 
 # Homey build artifacts
 .homeybuild/
-.homeychangelog.json
 env.json
 
 # Python virtual environment (for icon generation)

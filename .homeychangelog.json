@@ -1,0 +1,17 @@
+{
+  "0.3.0": {
+    "en": "🎉 UX & Analytics Release\n\n✨ Added Homey Insights integration for 8 metrics\n✨ Added parity progress & array errors capabilities\n✨ Container/VM autocomplete for easier flow creation\n\nNow track historical trends and create flows faster!"
+  },
+  "0.3.1": {
+    "en": "🐛 Critical Fix: Added missing pairing flow\n\n✅ Users can now add Unraid server devices properly\n✅ Pairing form shows URL and API key input fields\n✅ Connection validation during pairing"
+  },
+  "0.3.2": {
+    "en": "🔧 Simplified Pairing Flow\n\n✅ Device can now be added immediately\n✅ Configure URL and API key in device settings after adding\n✅ Faster and more user-friendly workflow"
+  },
+  "0.4.0": {
+    "en": "🎉 Major Update: Smart Automation & Dynamic UI\n\n✨ NEW FEATURES:\n• Share Space Monitoring - Get alerts when shares fill up with detailed info ({{free_gb}}, {{used_percent}}, etc.)\n• Enhanced Container Triggers - Separate \"started\" and \"stopped\" events with status details\n• Enhanced VM Triggers - Dedicated start/stop events with VM info\n• Force Refresh Action - Instantly update data on-demand in flows\n• Dynamic Device Tile - Capabilities auto-hide when monitoring is disabled\n\n🌡️ IMPROVEMENTS:\n• CPU Temperature now displays prominently on tile\n• All triggers include rich flow tags with detailed information\n• Cleaner device cards - only shows what you're monitoring\n• Container/VM names are now clean (no leading slashes)\n\n🐛 BUG FIXES:\n• Fixed capability errors when disabling poll settings\n• Fixed temperature display issues\n• Fixed share data validation\n• Improved stability when toggling options\n\nPerfect for advanced home automation! 🚀"
+  },
+  "0.4.1": {
+    "en": "🚀 Performance Update - Memory Optimization\n\n💾 OPTIMIZED:\n• Memory usage reduced by 43% (70MB → 40MB)\n• Faster performance with less garbage collection\n• Better stability - no memory leaks\n• Resource-friendly - comparable to other Homey apps\n\n🐛 FIXED:\n• Removed excessive logging that consumed memory\n• Optimized state storage for VMs and shares\n• Added automatic cleanup of deleted items\n• Improved efficiency on resource-constrained devices\n\n⚡ IMPACT:\n• Smoother operation on Homey Pro\n• More memory available for other apps\n• Better performance with many containers/VMs\n• No memory accumulation over time\n\nPerfect for servers with lots of containers! 💪"
+  }
+}
