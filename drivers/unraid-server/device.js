@@ -23,6 +23,9 @@ class UnraidDevice extends Homey.Device {
       this.log('🔥 Step 1: Initialize capabilities');
       await this._initializeCapabilities();
 
+      this.log('🔥 Step 1.5: Update capability visibility');
+      await this._updateCapabilityVisibility(this.getSettings());
+
       this.log('🔥 Step 2: Apply settings');
       await this._applySettings(this.getSettings());
 
@@ -70,7 +73,12 @@ class UnraidDevice extends Homey.Device {
     }
   }
 
-  async onSettings({ newSettings }) {
+  async onSettings({ newSettings, changedKeys }) {
+    // Update capability visibility based on poll settings
+    if (changedKeys.some(key => key.startsWith('poll'))) {
+      await this._updateCapabilityVisibility(newSettings);
+    }
+
     await this._applySettings(newSettings);
     this._schedulePoll(true);
   }
@@ -174,6 +182,43 @@ class UnraidDevice extends Homey.Device {
       this.log('Device not yet configured - please set URL and API key in settings');
       await this.setUnavailable('Please configure URL and API key in device settings');
     }
+  }
+
+  async _updateCapabilityVisibility(settings) {
+    this.log('👁️ Updating capability visibility based on poll settings');
+
+    // Map poll settings to their capabilities
+    const capabilityMap = {
+      pollArray: [
+        'measure_disk_temperature',
+        'measure_array_errors',
+        'measure_parity',
+        'measure_array_usage',
+      ],
+      pollDocker: ['measure_containers'],
+      pollVms: ['measure_vms'],
+    };
+
+    // Show/hide capabilities based on poll settings
+    for (const [pollSetting, capabilities] of Object.entries(capabilityMap)) {
+      const shouldShow = settings[pollSetting] !== false;
+
+      for (const capabilityId of capabilities) {
+        const hasCapability = this.hasCapability(capabilityId);
+
+        if (shouldShow && !hasCapability) {
+          // Show capability
+          this.log(`  ✅ Showing: ${capabilityId}`);
+          await this.addCapability(capabilityId).catch(this.error);
+        } else if (!shouldShow && hasCapability) {
+          // Hide capability
+          this.log(`  ❌ Hiding: ${capabilityId}`);
+          await this.removeCapability(capabilityId).catch(this.error);
+        }
+      }
+    }
+
+    this.log('👁️ Capability visibility updated');
   }
 
   _schedulePoll(reset = false) {
