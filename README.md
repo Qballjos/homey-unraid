@@ -316,9 +316,9 @@ See the [Discussion Guide](DISCUSSIONS_GUIDE.md) for templates and guidelines.
 
 If you find this app useful, consider buying me a coffee! Your support helps keep this project maintained and improved.
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
 
-**Direct PayPal Link:** [Donate via PayPal](https://www.paypal.com/donate?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
+**Direct PayPal Link:** [Donate via PayPal](https://www.paypal.com/donate/?business=P8CTXW8ER3PBY&no_recurring=0&item_name=voor+zn+koffie+%3B-%29&currency_code=EUR)
 
 ### 🐛 Bug Reports
 Found a bug? [Create an Issue](https://github.com/Qballjos/homey-unraid/issues)
