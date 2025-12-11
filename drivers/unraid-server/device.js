@@ -73,7 +73,7 @@ class UnraidDevice extends Homey.Device {
   }
 
   _registerActionHandlers() {
-    const driver = this.getDriver();
+    const driver = this.driver;
     driver.actions.startArray.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { start } }')));
     driver.actions.stopArray.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { stop } }')));
     driver.actions.startParity.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { parityCheck } }')));
@@ -117,7 +117,7 @@ class UnraidDevice extends Homey.Device {
   }
 
   _registerConditionHandlers() {
-    const driver = this.getDriver();
+    const driver = this.driver;
     driver.conditions.arrayIsStarted.registerRunListener(() => Promise.resolve(this.lastState.arrayStarted === true));
     driver.conditions.parityInProgress.registerRunListener(() => Promise.resolve(this.lastState.parityInProgress === true));
     driver.conditions.moverIsRunning.registerRunListener(() => Promise.resolve(this.lastState.moverRunning === true));
@@ -230,7 +230,7 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
       this.lastState.cpuPercent = cpuPercent;
       if (cpuPercent >= (this.settings.thresholds?.cpuThreshold || 90)) {
-        this.getDriver().triggers.cpuOver.trigger(this, { percent: cpuPercent }).catch(this.error);
+        this.driver.triggers.cpuOver.trigger(this, { percent: cpuPercent }).catch(this.error);
       }
     }
 
@@ -244,7 +244,7 @@ class UnraidDevice extends Homey.Device {
     if (array) {
       const started = array.status === 'started';
       if (this.lastState.arrayStarted !== null && this.lastState.arrayStarted !== started) {
-        const trig = started ? this.getDriver().triggers.arrayStarted : this.getDriver().triggers.arrayStopped;
+        const trig = started ? this.driver.triggers.arrayStarted : this.driver.triggers.arrayStopped;
         trig.trigger(this, {}).catch(this.error);
       }
       this.lastState.arrayStarted = started;
@@ -264,16 +264,16 @@ class UnraidDevice extends Homey.Device {
 
       // Parity started trigger
       if (parityNow && !this.lastState.parityInProgress) {
-        this.getDriver().triggers.parityStarted.trigger(this, {}).catch(this.error);
+        this.driver.triggers.parityStarted.trigger(this, {}).catch(this.error);
       }
 
       // Parity completed trigger
       if (!parityNow && this.lastState.parityInProgress) {
-        this.getDriver().triggers.parityCompleted.trigger(this, {}).catch(this.error);
+        this.driver.triggers.parityCompleted.trigger(this, {}).catch(this.error);
 
         // Check for errors
         if (parityErrors > 0) {
-          this.getDriver().triggers.parityError.trigger(this, { errors: parityErrors }).catch(this.error);
+          this.driver.triggers.parityError.trigger(this, { errors: parityErrors }).catch(this.error);
         }
       }
 
@@ -291,9 +291,9 @@ class UnraidDevice extends Homey.Device {
       // Mover tracking
       const moverNow = array.mover?.running || false;
       if (moverNow && !this.lastState.moverRunning) {
-        this.getDriver().triggers.moverStarted.trigger(this, {}).catch(this.error);
+        this.driver.triggers.moverStarted.trigger(this, {}).catch(this.error);
       } else if (!moverNow && this.lastState.moverRunning) {
-        this.getDriver().triggers.moverFinished.trigger(this, {}).catch(this.error);
+        this.driver.triggers.moverFinished.trigger(this, {}).catch(this.error);
       }
       this.lastState.moverRunning = moverNow;
 
@@ -325,13 +325,13 @@ class UnraidDevice extends Homey.Device {
 
         // Temperature warning trigger
         if (disk.temp && disk.temp >= diskTempThreshold && (!prevDisk.temp || prevDisk.temp < diskTempThreshold)) {
-          this.getDriver().triggers.diskTempWarning.trigger(this, { name: disk.name, temp: disk.temp }).catch(this.error);
+          this.driver.triggers.diskTempWarning.trigger(this, { name: disk.name, temp: disk.temp }).catch(this.error);
           hasHotDisk = true;
         }
 
         // SMART failure trigger
         if (disk.smartStatus && disk.smartStatus !== 'PASSED' && prevDisk.smartStatus === 'PASSED') {
-          this.getDriver().triggers.smartFailure.trigger(this, { name: disk.name }).catch(this.error);
+          this.driver.triggers.smartFailure.trigger(this, { name: disk.name }).catch(this.error);
         }
 
         // Store disk state
@@ -366,11 +366,11 @@ class UnraidDevice extends Homey.Device {
 
         // Container state changed
         if (prev && prev.state !== c.state) {
-          this.getDriver().triggers.containerChanged.trigger(this, { name: c.name, from: prev.state, to: c.state }).catch(this.error);
+          this.driver.triggers.containerChanged.trigger(this, { name: c.name, from: prev.state, to: c.state }).catch(this.error);
 
           // Container crashed (exited with non-zero code)
           if (c.state === 'exited' && c.exitCode && c.exitCode !== 0) {
-            this.getDriver().triggers.containerCrashed.trigger(this, { name: c.name, code: c.exitCode }).catch(this.error);
+            this.driver.triggers.containerCrashed.trigger(this, { name: c.name, code: c.exitCode }).catch(this.error);
           }
         }
 
@@ -393,7 +393,7 @@ class UnraidDevice extends Homey.Device {
       vms.forEach(vm => {
         const prev = this.lastState.vms[vm.name];
         if (prev && prev.state !== vm.state) {
-          this.getDriver().triggers.vmChanged.trigger(this, { name: vm.name, from: prev.state, to: vm.state }).catch(this.error);
+          this.driver.triggers.vmChanged.trigger(this, { name: vm.name, from: prev.state, to: vm.state }).catch(this.error);
         }
         this.lastState.vms[vm.name] = vm;
       });
