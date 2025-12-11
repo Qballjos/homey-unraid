@@ -176,6 +176,26 @@
   "platforms": [
     "local"
   ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "🐛 Debug"
+      },
+      "children": [
+        {
+          "id": "refreshButton",
+          "type": "button",
+          "label": {
+            "en": "Force Refresh All Devices"
+          },
+          "hint": {
+            "en": "Immediately poll all Unraid servers for fresh data"
+          }
+        }
+      ]
+    }
+  ],
   "drivers": [
     {
       "id": "unraid-server",
