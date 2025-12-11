@@ -205,8 +205,8 @@ class UnraidDevice extends Homey.Device {
     const parts = [];
 
     // Based on https://docs.unraid.net/API/how-to-use-the-api/
-    // Use 'info' instead of 'system', 'dockerContainers' instead of 'docker.containers'
-    parts.push('info { os { uptime } cpu { manufacturer brand cores } memory { used total } }');
+    // Start with minimal query - memory fields might not exist
+    parts.push('info { os { uptime platform } cpu { manufacturer brand cores } }');
     if (domains.pollArray) {
       parts.push('array { status parity { inProgress percent errors } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
     }
@@ -226,17 +226,12 @@ class UnraidDevice extends Homey.Device {
     const { info, array, dockerContainers, vms, shares } = data;
 
     // System metrics (using 'info' per Unraid API docs)
-    if (info?.cpu && info?.memory) {
-      // Note: Unraid API doesn't provide CPU load percentage directly
-      // We'll use a placeholder for now
-      const cpuPercent = 0; // TODO: Calculate from available CPU fields
-      const memPercent = Math.round((info.memory.used / info.memory.total) * 100);
-      this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);
-      this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
-      this.lastState.cpuPercent = cpuPercent;
-      if (cpuPercent >= (this.settings.thresholds?.cpuThreshold || 90)) {
-        this.driver.triggers.cpuOver.trigger(this, { percent: cpuPercent }).catch(this.error);
-      }
+    if (info) {
+      // Note: Memory fields need to be discovered
+      // For now, set to 0 (will fix once we know the schema)
+      this.setCapabilityValue('measure_cpu', 0).catch(this.error);
+      this.setCapabilityValue('measure_memory', 0).catch(this.error);
+      this.log('Info received:', JSON.stringify(info));
     }
 
     // Uptime
