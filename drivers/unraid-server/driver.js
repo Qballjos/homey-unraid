@@ -99,28 +99,41 @@ class UnraidDriver extends Homey.Driver {
     });
   }
 
+  async onPair(session) {
+    this.log('🔥 onPair called');
+    
+    session.setHandler('list_devices', async () => {
+      this.log('🔥 list_devices handler called');
+      const devices = [{
+        name: 'Unraid Server',
+        data: {
+          id: `unraid-${Date.now()}`
+        },
+        settings: {
+          baseUrl: 'http://tower:8080/graphql',
+          apiKey: '',
+          pollInterval: 60,
+          pollArray: true,
+          pollDocker: true,
+          pollVms: true,
+          pollShares: false,
+          cpuThreshold: 80,
+          diskTempThreshold: 60,
+          allowControl: false
+        }
+      }];
+      this.log('🔥 Returning devices:', devices.length);
+      return devices;
+    });
+  }
+  
   async onPairListDevices() {
-    this.log('🔥 onPairListDevices called!');
-    const devices = [{
+    // Fallback if Homey calls this directly
+    this.log('🔥 onPairListDevices called (fallback)');
+    return [{
       name: 'Unraid Server',
-      data: {
-        id: `unraid-${Date.now()}`
-      },
-      settings: {
-        baseUrl: 'http://tower:8080/graphql',
-        apiKey: '',
-        pollInterval: 60,
-        pollArray: true,
-        pollDocker: true,
-        pollVms: true,
-        pollShares: false,
-        cpuThreshold: 80,
-        diskTempThreshold: 60,
-        allowControl: false
-      }
+      data: { id: `unraid-${Date.now()}` }
     }];
-    this.log('🔥 Returning devices:', JSON.stringify(devices, null, 2));
-    return devices;
   }
 
   async _getContainerAutocomplete(query) {
