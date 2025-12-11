@@ -58,6 +58,12 @@ class UnraidDevice extends Homey.Device {
     };
 
     for (const [cap, value] of Object.entries(defaults)) {
+      // Add capability if it doesn't exist (for devices created before capability was added)
+      if (!this.hasCapability(cap)) {
+        this.log(`Adding missing capability: ${cap}`);
+        await this.addCapability(cap).catch(this.error);
+      }
+      
       if (this.hasCapability(cap) && this.getCapabilityValue(cap) === null) {
         await this.setCapabilityValue(cap, value).catch(this.error);
       }
