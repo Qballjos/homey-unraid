@@ -423,13 +423,25 @@ class UnraidDevice extends Homey.Device {
 
       this.setCapabilityValue('alarm_generic', hasHotDisk).catch(this.error);
     } else {
-      // Array polling disabled - set unavailable status
-      this.setCapabilityValue('array_status', 'not monitored').catch(this.error);
-      this.setCapabilityValue('measure_disk_usage', 0).catch(this.error);
-      this.setCapabilityValue('measure_temperature', 0).catch(this.error);
-      this.setCapabilityValue('measure_parity_progress', 0).catch(this.error);
-      this.setCapabilityValue('meter_array_errors', 0).catch(this.error);
-      this.setCapabilityValue('alarm_generic', false).catch(this.error);
+      // Array polling disabled - set unavailable status only for existing capabilities
+      if (this.hasCapability('array_status')) {
+        this.setCapabilityValue('array_status', 'not monitored').catch(this.error);
+      }
+      if (this.hasCapability('measure_disk_usage')) {
+        this.setCapabilityValue('measure_disk_usage', 0).catch(this.error);
+      }
+      if (this.hasCapability('measure_temperature')) {
+        this.setCapabilityValue('measure_temperature', 0).catch(this.error);
+      }
+      if (this.hasCapability('measure_parity_progress')) {
+        this.setCapabilityValue('measure_parity_progress', 0).catch(this.error);
+      }
+      if (this.hasCapability('meter_array_errors')) {
+        this.setCapabilityValue('meter_array_errors', 0).catch(this.error);
+      }
+      if (this.hasCapability('alarm_generic')) {
+        this.setCapabilityValue('alarm_generic', false).catch(this.error);
+      }
     }
 
     // Docker containers (from 'docker { containers }')
@@ -437,7 +449,10 @@ class UnraidDevice extends Homey.Device {
       this.log('Docker received:', JSON.stringify(docker));
       const containers = docker.containers;
       const runningContainers = containers.filter(c => c.state === 'RUNNING').length;
-      this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
+      
+      if (this.hasCapability('measure_containers')) {
+        this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
+      }
 
       containers.forEach(c => {
         // API returns 'names' as array, use first name (remove leading slash)
@@ -493,8 +508,8 @@ class UnraidDevice extends Homey.Device {
           exitCode: c.exitCode,
         };
       });
-    } else {
-      // Docker polling disabled
+    } else if (this.hasCapability('measure_containers')) {
+      // Docker polling disabled - set to 0 only if capability exists
       this.setCapabilityValue('measure_containers', 0).catch(this.error);
     }
 
@@ -503,7 +518,10 @@ class UnraidDevice extends Homey.Device {
       this.log('VMs received:', JSON.stringify(vms));
       const domains = vms.domains;
       const runningVms = domains.filter(vm => vm.state === 'RUNNING').length;
-      this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
+      
+      if (this.hasCapability('measure_vms')) {
+        this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
+      }
 
       domains.forEach(vm => {
         const prev = this.lastState.vms[vm.name];
@@ -537,8 +555,8 @@ class UnraidDevice extends Homey.Device {
 
         this.lastState.vms[vm.name] = vm;
       });
-    } else {
-      // VM polling disabled
+    } else if (this.hasCapability('measure_vms')) {
+      // VM polling disabled - set to 0 only if capability exists
       this.setCapabilityValue('measure_vms', 0).catch(this.error);
     }
 
