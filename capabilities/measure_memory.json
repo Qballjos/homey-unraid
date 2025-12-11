@@ -1,0 +1,16 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Memory Used"
+  },
+  "units": {
+    "en": "%"
+  },
+  "min": 0,
+  "max": 100,
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}
+

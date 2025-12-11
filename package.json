@@ -1,0 +1,17 @@
+{
+  "name": "com.unraid",
+  "version": "0.1.0",
+  "description": "Lightweight Homey app to monitor and control an Unraid server via the official GraphQL API.",
+  "main": "app.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "lint": "echo \"no lint configured\"",
+    "test": "echo \"no tests\""
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
+

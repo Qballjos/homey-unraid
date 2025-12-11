@@ -1,0 +1,140 @@
+{
+  "_comment": "Homey app manifest for Unraid integration",
+  "id": "com.unraid",
+  "version": "0.1.0",
+  "compatibility": ">=6.0.0",
+  "sdk": 3,
+  "author": {
+    "name": "Jos Visser",
+    "email": "qballjos@gmail.com",
+    "url": "https://josvisserict.nl"
+  },
+  "name": {
+    "en": "Unraid"
+  },
+  "icon": "/assets/icon-small.png",
+  "images": {
+    "small": "/assets/icon-small.png",
+    "large": "/assets/icon-large.png"
+  },
+  "brandColor": "#10b981",
+  "description": {
+    "en": "Lightweight monitoring and control for your Unraid server via the official GraphQL API."
+  },
+  "category": [
+    "tools"
+  ],
+  "capabilities": {
+    "measure_cpu": {
+      "type": "number",
+      "title": { "en": "CPU Load" },
+      "units": { "en": "%" },
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "measure_memory": {
+      "type": "number",
+      "title": { "en": "Memory Used" },
+      "units": { "en": "%" },
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "drivers": [
+    {
+      "id": "unraid-server",
+      "name": {
+        "en": "Unraid Server"
+      },
+      "class": "other",
+      "images": {
+        "large": "/drivers/unraid-server/assets/icon-large.png",
+        "small": "/drivers/unraid-server/assets/icon-small.png"
+      },
+      "capabilities": [
+        "measure_cpu",
+        "measure_memory",
+        "measure_temperature",
+        "alarm_generic"
+      ]
+    }
+  ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "array_started",
+        "title": { "en": "Array started" }
+      },
+      {
+        "id": "array_stopped",
+        "title": { "en": "Array stopped" }
+      },
+      {
+        "id": "parity_completed",
+        "title": { "en": "Parity check completed" }
+      },
+      {
+        "id": "container_state_changed",
+        "title": { "en": "Container state changed" },
+        "args": [
+          { "name": "name", "type": "text" },
+          { "name": "from", "type": "text" },
+          { "name": "to", "type": "text" }
+        ]
+      },
+      {
+        "id": "vm_state_changed",
+        "title": { "en": "VM state changed" },
+        "args": [
+          { "name": "name", "type": "text" },
+          { "name": "from", "type": "text" },
+          { "name": "to", "type": "text" }
+        ]
+      },
+      {
+        "id": "cpu_over_threshold",
+        "title": { "en": "CPU usage over threshold" },
+        "args": [
+          { "name": "percent", "type": "number" }
+        ]
+      }
+    ],
+    "conditions": [
+      { "id": "array_is_started", "title": { "en": "Array is started" } },
+      { "id": "container_is_running", "title": { "en": "Container is running" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "vm_is_running", "title": { "en": "VM is running" }, "args": [{ "name": "name", "type": "text" }] }
+    ],
+    "actions": [
+      { "id": "start_array", "title": { "en": "Start array" } },
+      { "id": "stop_array", "title": { "en": "Stop array" } },
+      { "id": "start_parity_check", "title": { "en": "Start parity check" } },
+      { "id": "start_container", "title": { "en": "Start container" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "stop_container", "title": { "en": "Stop container" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "restart_container", "title": { "en": "Restart container" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "update_container", "title": { "en": "Update container (pull image)" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "start_vm", "title": { "en": "Start VM" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "stop_vm", "title": { "en": "Stop VM" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "reboot_vm", "title": { "en": "Reboot VM" }, "args": [{ "name": "name", "type": "text" }] },
+      { "id": "send_unraid_notification", "title": { "en": "Send Unraid notification" }, "args": [{ "name": "message", "type": "text" }] }
+    ]
+  },
+  "speechExamples": [
+    {
+      "example": {
+        "en": "Hey Homey, what is the Unraid array status?"
+      }
+    }
+  ]
+}
+

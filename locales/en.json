@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "Unraid",
+    "description": "Monitor and control your Unraid server via GraphQL."
+  },
+  "settings": {
+    "baseUrl": "Server URL",
+    "apiKey": "API Key",
+    "pollInterval": "Polling interval (seconds)",
+    "dataToPoll": "Data to poll",
+    "thresholds": "Thresholds",
+    "allowControl": "Allow control actions"
+  },
+  "flow": {
+    "triggers": {
+      "array_started": "Array started",
+      "array_stopped": "Array stopped",
+      "parity_completed": "Parity check completed",
+      "container_state_changed": "Container state changed",
+      "vm_state_changed": "VM state changed",
+      "cpu_over_threshold": "CPU usage over threshold"
+    },
+    "conditions": {
+      "array_is_started": "Array is started",
+      "container_is_running": "Container is running",
+      "vm_is_running": "VM is running"
+    },
+    "actions": {
+      "start_array": "Start array",
+      "stop_array": "Stop array",
+      "start_parity_check": "Start parity check",
+      "start_container": "Start container",
+      "stop_container": "Stop container",
+      "restart_container": "Restart container",
+      "update_container": "Update container (pull image)",
+      "start_vm": "Start VM",
+      "stop_vm": "Stop VM",
+      "reboot_vm": "Reboot VM",
+      "send_unraid_notification": "Send Unraid notification"
+    }
+  }
+}
+

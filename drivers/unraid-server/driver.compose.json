@@ -1,0 +1,66 @@
+{
+  "name": {
+    "en": "Unraid Server"
+  },
+  "class": "other",
+  "capabilities": [
+    "measure_cpu",
+    "measure_memory",
+    "measure_temperature",
+    "alarm_generic"
+  ],
+  "images": {
+    "large": "/drivers/unraid-server/assets/icon-large.png",
+    "small": "/drivers/unraid-server/assets/icon-small.png"
+  },
+  "settings": [
+    {
+      "id": "baseUrl",
+      "type": "text",
+      "label": { "en": "Server URL (e.g. http://tower)" },
+      "hint": { "en": "Root URL of your Unraid server WebGUI" },
+      "value": "http://tower"
+    },
+    {
+      "id": "apiKey",
+      "type": "password",
+      "label": { "en": "API Key" },
+      "hint": { "en": "Create under Settings → Management Access → API Keys" },
+      "value": ""
+    },
+    {
+      "id": "pollInterval",
+      "type": "number",
+      "label": { "en": "Polling interval (seconds)" },
+      "value": 30,
+      "attr": { "min": 10, "max": 300, "step": 5 }
+    },
+    {
+      "id": "domains",
+      "type": "group",
+      "label": { "en": "Data to poll" },
+      "children": [
+        { "id": "pollArray", "type": "checkbox", "label": { "en": "Array & disks" }, "value": true },
+        { "id": "pollDocker", "type": "checkbox", "label": { "en": "Docker containers" }, "value": true },
+        { "id": "pollVms", "type": "checkbox", "label": { "en": "VMs" }, "value": true },
+        { "id": "pollShares", "type": "checkbox", "label": { "en": "Shares/cache" }, "value": false }
+      ]
+    },
+    {
+      "id": "thresholds",
+      "type": "group",
+      "label": { "en": "Thresholds" },
+      "children": [
+        { "id": "cpuThreshold", "type": "number", "label": { "en": "CPU %" }, "value": 90, "attr": { "min": 10, "max": 100, "step": 1 } },
+        { "id": "diskTempThreshold", "type": "number", "label": { "en": "Disk temp °C" }, "value": 60, "attr": { "min": 20, "max": 90, "step": 1 } }
+      ]
+    },
+    {
+      "id": "allowControl",
+      "type": "checkbox",
+      "label": { "en": "Allow control actions" },
+      "value": false
+    }
+  ]
+}
+
