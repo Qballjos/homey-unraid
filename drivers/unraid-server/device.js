@@ -204,23 +204,26 @@ class UnraidDevice extends Homey.Device {
     const { domains = {} } = this.settings;
     const parts = [];
 
-    // Based on GraphQL schema: Metrics.cpu and Metrics.memory
+    // Based on GraphQL schema - all field names confirmed!
     parts.push('metrics { cpu { percentTotal } memory { percentTotal used total } }');
     parts.push('info { os { uptime } }');
 
     if (domains.pollArray) {
-      parts.push('array { state capacity { disks { free used total } } disks { name size status temp } }');
+      parts.push(`array {
+        state
+        capacity { disks { free used total } kilobytes { free used total } }
+        disks { name size temp status fsFree fsUsed fsSize numErrors type }
+        parityCheckStatus { running progress errors status paused speed }
+      }`);
     }
     if (domains.pollDocker) {
-      // 'docker' is singular, returns Docker object with containers field
-      parts.push('docker { containers { id names state status autoStart } }');
+      parts.push('docker { containers { id names state status autoStart isUpdateAvailable } }');
     }
     if (domains.pollVms) {
-      // 'vms' returns Vms object - need to discover fields
-      parts.push('vms { domains { name state } }');
+      parts.push('vms { domains { id name state } }');
     }
     if (domains.pollShares) {
-      parts.push('shares { name free used }');
+      parts.push('shares { name fsFree fsUsed fsSize }');
     }
     return `query { ${parts.join(' ')} }`;
   }
@@ -254,9 +257,9 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
     }
 
-    // Array status and metrics
+    // Array status and metrics (based on UnraidArray schema)
     if (array) {
-      const started = array.status === 'started';
+      const started = array.state === 'STARTED';
       if (this.lastState.arrayStarted !== null && this.lastState.arrayStarted !== started) {
         const trig = started ? this.driver.triggers.arrayStarted : this.driver.triggers.arrayStopped;
         trig.trigger(this, {}).catch(this.error);
@@ -264,17 +267,15 @@ class UnraidDevice extends Homey.Device {
       this.lastState.arrayStarted = started;
 
       // Array status text
-      let statusText = array.status || 'unknown';
-      if (array.parity?.inProgress) {
-        statusText = `Parity check (${array.parity.percent || 0}%)`;
-      } else if (array.mover?.running) {
-        statusText = 'Mover running';
+      let statusText = array.state || 'STOPPED';
+      if (array.parityCheckStatus?.running) {
+        statusText = `Parity check (${array.parityCheckStatus.progress || 0}%)`;
       }
       this.setCapabilityValue('array_status', statusText).catch(this.error);
 
-      // Parity tracking
-      const parityNow = array.parity?.inProgress || false;
-      const parityErrors = array.parity?.errors || 0;
+      // Parity tracking (from parityCheckStatus)
+      const parityNow = array.parityCheckStatus?.running || false;
+      const parityErrors = array.parityCheckStatus?.errors || 0;
 
       // Parity started trigger
       if (parityNow && !this.lastState.parityInProgress) {
@@ -292,38 +293,23 @@ class UnraidDevice extends Homey.Device {
       }
 
       this.lastState.parityInProgress = parityNow;
-      this.lastState.parityPercent = array.parity?.percent ?? null;
+      this.lastState.parityPercent = array.parityCheckStatus?.progress ?? null;
       this.lastState.parityErrors = parityErrors;
 
       // Update parity progress capability
-      const parityProgress = array.parity?.percent || 0;
+      const parityProgress = array.parityCheckStatus?.progress || 0;
       this.setCapabilityValue('measure_parity_progress', parityProgress).catch(this.error);
 
       // Update array errors capability
       this.setCapabilityValue('meter_array_errors', parityErrors).catch(this.error);
 
-      // Mover tracking
-      const moverNow = array.mover?.running || false;
-      if (moverNow && !this.lastState.moverRunning) {
-        this.driver.triggers.moverStarted.trigger(this, {}).catch(this.error);
-      } else if (!moverNow && this.lastState.moverRunning) {
-        this.driver.triggers.moverFinished.trigger(this, {}).catch(this.error);
-      }
-      this.lastState.moverRunning = moverNow;
-
-      // Disk usage from cache pools
-      if (array.cache?.pools && array.cache.pools.length > 0) {
-        let totalUsed = 0;
-        let totalSpace = 0;
-        array.cache.pools.forEach(pool => {
-          totalUsed += pool.used || 0;
-          totalSpace += (pool.free || 0) + (pool.used || 0);
-        });
-        if (totalSpace > 0) {
-          const diskUsagePercent = Math.round((totalUsed / totalSpace) * 1000) / 10;
+      // Disk usage from capacity.kilobytes
+      if (array.capacity?.kilobytes) {
+        const { used, total } = array.capacity.kilobytes;
+        if (total && total > 0) {
+          const diskUsagePercent = Math.round((used / total) * 1000) / 10;
           this.setCapabilityValue('measure_disk_usage', diskUsagePercent).catch(this.error);
         }
-        this.lastState.cachePools = array.cache.pools;
       }
 
       // Disk temperature and SMART monitoring
@@ -402,12 +388,13 @@ class UnraidDevice extends Homey.Device {
       this.setCapabilityValue('measure_containers', 0).catch(this.error);
     }
 
-    // Virtual machines
-    if (vms) {
-      const runningVms = vms.filter(vm => vm.state === 'running').length;
+    // Virtual machines (from 'vms { domains }')
+    if (vms?.domains) {
+      const domains = vms.domains;
+      const runningVms = domains.filter(vm => vm.state === 'running').length;
       this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
 
-      vms.forEach(vm => {
+      domains.forEach(vm => {
         const prev = this.lastState.vms[vm.name];
         if (prev && prev.state !== vm.state) {
           this.driver.triggers.vmChanged.trigger(this, { name: vm.name, from: prev.state, to: vm.state }).catch(this.error);
