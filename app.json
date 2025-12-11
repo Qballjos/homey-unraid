@@ -189,8 +189,8 @@
       },
       "capabilities": [
         "measure_cpu",
-        "measure_cpu_temperature",
         "measure_memory",
+        "measure_cpu_temperature",
         "measure_temperature",
         "measure_disk_usage",
         "measure_parity_progress",
