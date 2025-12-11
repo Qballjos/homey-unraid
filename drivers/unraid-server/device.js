@@ -252,9 +252,11 @@ class UnraidDevice extends Homey.Device {
       }
     }
 
-    // Uptime
+    // Uptime (from 'info { os { uptime } }')
     if (info?.os?.uptime !== null && info?.os?.uptime !== undefined) {
+      this.log('Info received:', JSON.stringify(info));
       const uptimeHours = Math.round((info.os.uptime / 3600) * 10) / 10;
+      this.log(`Uptime: ${info.os.uptime}s → ${uptimeHours}h`);
       this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
     }
 
