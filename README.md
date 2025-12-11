@@ -313,6 +313,7 @@ Join the community! [View Discussions](https://github.com/Qballjos/homey-unraid/
 See the [Discussion Guide](DISCUSSIONS_GUIDE.md) for templates and guidelines.
 
 ### ☕ Support the Project
+
 If you find this app useful, consider buying me a coffee! Your support helps keep this project maintained and improved.
 
 <form action="https://www.paypal.com/donate" method="post" target="_top">
