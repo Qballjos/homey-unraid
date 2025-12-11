@@ -151,12 +151,6 @@
         "meter_uptime",
         "array_status",
         "alarm_generic"
-      ],
-      "pair": [
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
       ]
     }
   ],
