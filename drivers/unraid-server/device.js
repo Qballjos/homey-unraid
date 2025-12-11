@@ -23,7 +23,10 @@ class UnraidDevice extends Homey.Device {
       this.log('🔥 Step 1: Initialize capabilities');
       await this._initializeCapabilities();
 
-      this.log('🔥 Step 1.5: Update capability visibility');
+      this.log('🔥 Step 1.5: Fix capability order');
+      await this._fixCapabilityOrder();
+
+      this.log('🔥 Step 1.6: Update capability visibility');
       await this._updateCapabilityVisibility(this.getSettings());
 
       this.log('🔥 Step 2: Apply settings');
@@ -66,10 +69,46 @@ class UnraidDevice extends Homey.Device {
         this.log(`Adding missing capability: ${cap}`);
         await this.addCapability(cap).catch(this.error);
       }
-      
+
       if (this.hasCapability(cap) && this.getCapabilityValue(cap) === null) {
         await this.setCapabilityValue(cap, value).catch(this.error);
       }
+    }
+  }
+
+  async _fixCapabilityOrder() {
+    // Ensure CPU temperature appears before disk temperature on the tile
+    // This fixes devices that were created with the old capability order
+    const cpuTempIndex = this.getCapabilities().indexOf('measure_cpu_temperature');
+    const diskTempIndex = this.getCapabilities().indexOf('measure_temperature');
+
+    // If disk temp appears before CPU temp, move CPU temp to just after memory
+    if (diskTempIndex !== -1 && cpuTempIndex !== -1 && diskTempIndex < cpuTempIndex) {
+      this.log('🔧 Fixing capability order: Moving CPU temp before disk temp');
+
+      // Remove CPU temperature
+      await this.removeCapability('measure_cpu_temperature').catch(this.error);
+
+      // Find where to insert it (after memory, or after CPU if memory doesn't exist)
+      const memoryIndex = this.getCapabilities().indexOf('measure_memory');
+      const cpuIndex = this.getCapabilities().indexOf('measure_cpu');
+
+      let targetIndex = -1;
+      if (memoryIndex !== -1) {
+        targetIndex = memoryIndex + 1;
+      } else if (cpuIndex !== -1) {
+        targetIndex = cpuIndex + 1;
+      } else {
+        targetIndex = 0;
+      }
+
+      // Re-add CPU temperature at the correct position
+      await this.addCapability('measure_cpu_temperature').catch(this.error);
+
+      // Set current value
+      await this.setCapabilityValue('measure_cpu_temperature', 0).catch(this.error);
+
+      this.log('✅ Capability order fixed - CPU temp now appears before disk temp');
     }
   }
 
