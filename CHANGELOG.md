@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [0.3.0] - 2025-12-11
+
+### 🎉 UX & Analytics Release
+
+#### Added
 - **Homey Insights integration** - 8 metrics now track historical data
   - CPU Load (%) - Resource usage over time
   - Memory Used (%) - RAM consumption trends
@@ -123,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Control actions require explicit opt-in
 - No logging of sensitive credentials
 
-[Unreleased]: https://github.com/Qballjos/homey-unraid/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Qballjos/homey-unraid/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Qballjos/homey-unraid/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Qballjos/homey-unraid/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Qballjos/homey-unraid/releases/tag/v0.1.0
 
