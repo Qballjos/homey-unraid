@@ -204,14 +204,14 @@ class UnraidDevice extends Homey.Device {
     const { domains = {} } = this.settings;
     const parts = [];
 
-    // Try to query available fields
-    // Unraid API might have different schema
-    parts.push('__typename');
+    // Based on https://docs.unraid.net/API/how-to-use-the-api/
+    // Use 'info' instead of 'system', 'dockerContainers' instead of 'docker.containers'
+    parts.push('info { os { uptime } cpu { manufacturer brand cores } memory { used total } }');
     if (domains.pollArray) {
       parts.push('array { status parity { inProgress percent errors } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
     }
     if (domains.pollDocker) {
-      parts.push('docker { containers { name state restartCount exitCode } }');
+      parts.push('dockerContainers { names state status autoStart }');
     }
     if (domains.pollVms) {
       parts.push('vms { name state }');
@@ -223,12 +223,14 @@ class UnraidDevice extends Homey.Device {
   }
 
   _updateState(data) {
-    const { system, array, docker, vms, shares } = data;
+    const { info, array, dockerContainers, vms, shares } = data;
 
-    // System metrics
-    if (system?.cpu?.load !== null && system?.memory) {
-      const cpuPercent = Math.round(system.cpu.load * 100);
-      const memPercent = Math.round((system.memory.used / system.memory.total) * 100);
+    // System metrics (using 'info' per Unraid API docs)
+    if (info?.cpu && info?.memory) {
+      // Note: Unraid API doesn't provide CPU load percentage directly
+      // We'll use a placeholder for now
+      const cpuPercent = 0; // TODO: Calculate from available CPU fields
+      const memPercent = Math.round((info.memory.used / info.memory.total) * 100);
       this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);
       this.setCapabilityValue('measure_memory', memPercent).catch(this.error);
       this.lastState.cpuPercent = cpuPercent;
@@ -238,8 +240,8 @@ class UnraidDevice extends Homey.Device {
     }
 
     // Uptime
-    if (system?.uptime !== null && system?.uptime !== undefined) {
-      const uptimeHours = Math.round((system.uptime / 3600) * 10) / 10;
+    if (info?.os?.uptime !== null && info?.os?.uptime !== undefined) {
+      const uptimeHours = Math.round((info.os.uptime / 3600) * 10) / 10;
       this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
     }
 
@@ -360,24 +362,26 @@ class UnraidDevice extends Homey.Device {
     }
 
     // Docker containers
-    if (docker?.containers) {
-      const runningContainers = docker.containers.filter(c => c.state === 'running').length;
+    if (dockerContainers) {
+      const runningContainers = dockerContainers.filter(c => c.state === 'running').length;
       this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
 
-      docker.containers.forEach(c => {
-        const prev = this.lastState.containers[c.name];
+      dockerContainers.forEach(c => {
+        // API returns 'names' as array, use first name
+        const containerName = Array.isArray(c.names) ? c.names[0] : c.names;
+        const prev = this.lastState.containers[containerName];
 
         // Container state changed
         if (prev && prev.state !== c.state) {
-          this.driver.triggers.containerChanged.trigger(this, { name: c.name, from: prev.state, to: c.state }).catch(this.error);
+          this.driver.triggers.containerChanged.trigger(this, { name: containerName, from: prev.state, to: c.state }).catch(this.error);
 
           // Container crashed (exited with non-zero code)
           if (c.state === 'exited' && c.exitCode && c.exitCode !== 0) {
-            this.driver.triggers.containerCrashed.trigger(this, { name: c.name, code: c.exitCode }).catch(this.error);
+            this.driver.triggers.containerCrashed.trigger(this, { name: containerName, code: c.exitCode }).catch(this.error);
           }
         }
 
-        this.lastState.containers[c.name] = {
+        this.lastState.containers[containerName] = {
           state: c.state,
           restartCount: c.restartCount || 0,
           exitCode: c.exitCode,
