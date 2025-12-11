@@ -87,6 +87,7 @@
       {
         "id": "container_state_changed",
         "title": { "en": "Container state changed" },
+        "titleFormatted": { "en": "Container [[name]] changed from [[from]] to [[to]]" },
         "args": [
           { "name": "name", "type": "text" },
           { "name": "from", "type": "text" },
@@ -96,6 +97,7 @@
       {
         "id": "vm_state_changed",
         "title": { "en": "VM state changed" },
+        "titleFormatted": { "en": "VM [[name]] changed from [[from]] to [[to]]" },
         "args": [
           { "name": "name", "type": "text" },
           { "name": "from", "type": "text" },
@@ -105,28 +107,91 @@
       {
         "id": "cpu_over_threshold",
         "title": { "en": "CPU usage over threshold" },
+        "titleFormatted": { "en": "CPU usage is [[percent]]%" },
         "args": [
           { "name": "percent", "type": "number" }
         ]
       }
     ],
     "conditions": [
-      { "id": "array_is_started", "title": { "en": "Array is started" } },
-      { "id": "container_is_running", "title": { "en": "Container is running" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "vm_is_running", "title": { "en": "VM is running" }, "args": [{ "name": "name", "type": "text" }] }
+      {
+        "id": "array_is_started",
+        "title": { "en": "Array is started" }
+      },
+      {
+        "id": "container_is_running",
+        "title": { "en": "Container is running" },
+        "titleFormatted": { "en": "Container [[name]] is running" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "vm_is_running",
+        "title": { "en": "VM is running" },
+        "titleFormatted": { "en": "VM [[name]] is running" },
+        "args": [{ "name": "name", "type": "text" }]
+      }
     ],
     "actions": [
-      { "id": "start_array", "title": { "en": "Start array" } },
-      { "id": "stop_array", "title": { "en": "Stop array" } },
-      { "id": "start_parity_check", "title": { "en": "Start parity check" } },
-      { "id": "start_container", "title": { "en": "Start container" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "stop_container", "title": { "en": "Stop container" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "restart_container", "title": { "en": "Restart container" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "update_container", "title": { "en": "Update container (pull image)" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "start_vm", "title": { "en": "Start VM" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "stop_vm", "title": { "en": "Stop VM" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "reboot_vm", "title": { "en": "Reboot VM" }, "args": [{ "name": "name", "type": "text" }] },
-      { "id": "send_unraid_notification", "title": { "en": "Send Unraid notification" }, "args": [{ "name": "message", "type": "text" }] }
+      {
+        "id": "start_array",
+        "title": { "en": "Start array" }
+      },
+      {
+        "id": "stop_array",
+        "title": { "en": "Stop array" }
+      },
+      {
+        "id": "start_parity_check",
+        "title": { "en": "Start parity check" }
+      },
+      {
+        "id": "start_container",
+        "title": { "en": "Start container" },
+        "titleFormatted": { "en": "Start container [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "stop_container",
+        "title": { "en": "Stop container" },
+        "titleFormatted": { "en": "Stop container [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "restart_container",
+        "title": { "en": "Restart container" },
+        "titleFormatted": { "en": "Restart container [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "update_container",
+        "title": { "en": "Update container (pull image)" },
+        "titleFormatted": { "en": "Update container [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "start_vm",
+        "title": { "en": "Start VM" },
+        "titleFormatted": { "en": "Start VM [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "stop_vm",
+        "title": { "en": "Stop VM" },
+        "titleFormatted": { "en": "Stop VM [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "reboot_vm",
+        "title": { "en": "Reboot VM" },
+        "titleFormatted": { "en": "Reboot VM [[name]]" },
+        "args": [{ "name": "name", "type": "text" }]
+      },
+      {
+        "id": "send_unraid_notification",
+        "title": { "en": "Send Unraid notification" },
+        "titleFormatted": { "en": "Send notification: [[message]]" },
+        "args": [{ "name": "message", "type": "text" }]
+      }
     ]
   },
   "speechExamples": [

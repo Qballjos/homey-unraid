@@ -35,31 +35,31 @@ class UnraidDevice extends Homey.Device {
     driver.actions.startParity.registerRunListener(() => this._requireControl(() => this._mutation('mutation { array { parityCheck } }')));
 
     driver.actions.startContainer.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ docker { startContainer(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ docker { startContainer(name:$name) } }', { name: args.name }),
     ));
     driver.actions.stopContainer.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ docker { stopContainer(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ docker { stopContainer(name:$name) } }', { name: args.name }),
     ));
     driver.actions.restartContainer.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ docker { restartContainer(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ docker { restartContainer(name:$name) } }', { name: args.name }),
     ));
     driver.actions.updateContainer.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ docker { pullContainer(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ docker { pullContainer(name:$name) } }', { name: args.name }),
     ));
 
     driver.actions.startVm.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ vms { start(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ vms { start(name:$name) } }', { name: args.name }),
     ));
     driver.actions.stopVm.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ vms { stop(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ vms { stop(name:$name) } }', { name: args.name }),
     ));
     driver.actions.rebootVm.registerRunListener(async (args) => this._requireControl(() =>
-      this._mutation('mutation($name:String!){ vms { reboot(name:$name) } }', { name: args.name })
+      this._mutation('mutation($name:String!){ vms { reboot(name:$name) } }', { name: args.name }),
     ));
 
     driver.actions.sendNotification.registerRunListener(async (args) => this._mutation(
       'mutation($message:String!){ notifications { send(message:$message, level:info) } }',
-      { message: args.message }
+      { message: args.message },
     ));
   }
 
@@ -67,10 +67,10 @@ class UnraidDevice extends Homey.Device {
     const driver = this.getDriver();
     driver.conditions.arrayIsStarted.registerRunListener(() => Promise.resolve(this.lastState.arrayStarted === true));
     driver.conditions.containerIsRunning.registerRunListener((args) => Promise.resolve(
-      this.lastState.containers?.[args.name]?.state === 'running'
+      this.lastState.containers?.[args.name]?.state === 'running',
     ));
     driver.conditions.vmIsRunning.registerRunListener((args) => Promise.resolve(
-      this.lastState.vms?.[args.name]?.state === 'running'
+      this.lastState.vms?.[args.name]?.state === 'running',
     ));
   }
 
@@ -88,8 +88,12 @@ class UnraidDevice extends Homey.Device {
   }
 
   _schedulePoll(reset = false) {
-    if (reset) this._clearPoll();
-    if (this.pollHandle) return;
+    if (reset) {
+      this._clearPoll();
+    }
+    if (this.pollHandle) {
+      return;
+    }
     this.pollHandle = this.homey.setInterval(() => this._poll().catch(err => this._handleError(err)), this.pollIntervalMs);
     this._poll().catch(err => this._handleError(err));
   }
@@ -130,7 +134,7 @@ class UnraidDevice extends Homey.Device {
   _updateState(data) {
     const { system, array, docker, vms, shares } = data;
 
-    if (system?.cpu?.load != null && system?.memory) {
+    if (system?.cpu?.load !== null && system?.memory) {
       const cpuPercent = Math.round(system.cpu.load * 100);
       const memPercent = Math.round((system.memory.used / system.memory.total) * 100);
       this.setCapabilityValue('measure_cpu', cpuPercent).catch(this.error);

@@ -7,11 +7,41 @@
     "node": ">=18"
   },
   "scripts": {
-    "lint": "echo \"no lint configured\"",
-    "test": "echo \"no tests\""
+    "validate": "homey app validate --level publish",
+    "run": "homey app run",
+    "install": "homey app install",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "echo \"no tests yet\""
   },
+  "keywords": [
+    "homey",
+    "unraid",
+    "smart-home",
+    "home-automation",
+    "docker",
+    "graphql",
+    "nas",
+    "server-monitoring"
+  ],
+  "author": {
+    "name": "Jos Visser",
+    "email": "qballjos@gmail.com",
+    "url": "https://josvisserict.nl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Qballjos/homey-unraid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Qballjos/homey-unraid/issues"
+  },
+  "homepage": "https://github.com/Qballjos/homey-unraid#readme",
+  "license": "MIT",
   "dependencies": {
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
   }
 }
-
