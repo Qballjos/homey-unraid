@@ -51,6 +51,19 @@
       "insights": true,
       "uiComponent": "sensor"
     },
+    "measure_cpu_temperature": {
+      "type": "number",
+      "title": { "en": "CPU Temperature" },
+      "units": { "en": "°C" },
+      "icon": "/assets/cpu-temp.svg",
+      "min": 0,
+      "max": 120,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor"
+    },
     "measure_disk_usage": {
       "type": "number",
       "title": { "en": "Array Space Used" },
@@ -150,6 +163,7 @@
       "capabilities": [
         "measure_cpu",
         "measure_memory",
+        "measure_cpu_temperature",
         "measure_temperature",
         "measure_disk_usage",
         "measure_parity_progress",
