@@ -134,6 +134,7 @@ class UnraidDevice extends Homey.Device {
   _updateState(data) {
     const { system, array, docker, vms, shares } = data;
 
+    // System metrics
     if (system?.cpu?.load !== null && system?.memory) {
       const cpuPercent = Math.round(system.cpu.load * 100);
       const memPercent = Math.round((system.memory.used / system.memory.total) * 100);
@@ -145,6 +146,13 @@ class UnraidDevice extends Homey.Device {
       }
     }
 
+    // Uptime
+    if (system?.uptime !== null && system?.uptime !== undefined) {
+      const uptimeHours = Math.round((system.uptime / 3600) * 10) / 10;
+      this.setCapabilityValue('meter_uptime', uptimeHours).catch(this.error);
+    }
+
+    // Array status and metrics
     if (array) {
       const started = array.status === 'started';
       if (this.lastState.arrayStarted !== null && this.lastState.arrayStarted !== started) {
@@ -153,11 +161,36 @@ class UnraidDevice extends Homey.Device {
       }
       this.lastState.arrayStarted = started;
 
+      // Array status text
+      let statusText = array.status || 'unknown';
+      if (array.parity?.inProgress) {
+        statusText = `Parity check (${array.parity.percent || 0}%)`;
+      } else if (array.mover?.running) {
+        statusText = 'Mover running';
+      }
+      this.setCapabilityValue('array_status', statusText).catch(this.error);
+
+      // Parity tracking
       if (array.parity?.inProgress === false && this.lastState.parityPercent !== null && this.lastState.parityPercent !== 100) {
         this.getDriver().triggers.parityCompleted.trigger(this, {}).catch(this.error);
       }
       this.lastState.parityPercent = array.parity?.percent ?? null;
 
+      // Disk usage from cache pools
+      if (array.cache?.pools && array.cache.pools.length > 0) {
+        let totalUsed = 0;
+        let totalSpace = 0;
+        array.cache.pools.forEach(pool => {
+          totalUsed += pool.used || 0;
+          totalSpace += (pool.free || 0) + (pool.used || 0);
+        });
+        if (totalSpace > 0) {
+          const diskUsagePercent = Math.round((totalUsed / totalSpace) * 1000) / 10;
+          this.setCapabilityValue('measure_disk_usage', diskUsagePercent).catch(this.error);
+        }
+      }
+
+      // Disk temperature monitoring
       const maxTemp = Math.max(...(array.disks || []).map(d => d.temp || 0), 0);
       if (Number.isFinite(maxTemp)) {
         this.setCapabilityValue('measure_temperature', maxTemp).catch(this.error);
@@ -170,7 +203,11 @@ class UnraidDevice extends Homey.Device {
       }
     }
 
+    // Docker containers
     if (docker?.containers) {
+      const runningContainers = docker.containers.filter(c => c.state === 'running').length;
+      this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
+
       docker.containers.forEach(c => {
         const prev = this.lastState.containers[c.name];
         if (prev && prev.state !== c.state) {
@@ -180,7 +217,11 @@ class UnraidDevice extends Homey.Device {
       });
     }
 
+    // Virtual machines
     if (vms) {
+      const runningVms = vms.filter(vm => vm.state === 'running').length;
+      this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
+
       vms.forEach(vm => {
         const prev = this.lastState.vms[vm.name];
         if (prev && prev.state !== vm.state) {

@@ -46,6 +46,54 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor"
+    },
+    "measure_disk_usage": {
+      "type": "number",
+      "title": { "en": "Array Space Used" },
+      "units": { "en": "%" },
+      "min": 0,
+      "max": 100,
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "measure_containers": {
+      "type": "number",
+      "title": { "en": "Containers Running" },
+      "units": { "en": "containers" },
+      "min": 0,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "measure_vms": {
+      "type": "number",
+      "title": { "en": "VMs Running" },
+      "units": { "en": "VMs" },
+      "min": 0,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "meter_uptime": {
+      "type": "number",
+      "title": { "en": "Uptime" },
+      "units": { "en": "hours" },
+      "min": 0,
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "array_status": {
+      "type": "string",
+      "title": { "en": "Array Status" },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null
     }
   },
   "platforms": [
@@ -66,6 +114,11 @@
         "measure_cpu",
         "measure_memory",
         "measure_temperature",
+        "measure_disk_usage",
+        "measure_containers",
+        "measure_vms",
+        "meter_uptime",
+        "array_status",
         "alarm_generic"
       ]
     }

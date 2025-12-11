@@ -2,6 +2,17 @@
 
 Lightweight Homey app to monitor and control an Unraid server via the official GraphQL API. Supports array status, parity, disk temps, Docker containers, VMs, shares (optional), and control actions (opt-in).
 
+## Device Metrics (Displayed on Card)
+- **CPU Load** - Current CPU usage (%)
+- **Memory Used** - RAM usage (%)
+- **Disk Temperature** - Maximum disk temperature (°C)
+- **Array Space Used** - Cache pool usage (%)
+- **Containers Running** - Number of active Docker containers
+- **VMs Running** - Number of active virtual machines
+- **Uptime** - Server uptime (hours)
+- **Array Status** - Current status (started/stopped/parity check/mover)
+- **Alarm** - Warning indicator for high disk temperature
+
 ## Requirements
 - Node.js 18+
 - Homey CLI (`npm install -g homey`)
@@ -30,8 +41,9 @@ homey app run
 
 ## Development notes
 - Icons: `assets/icon-small.png` (250x175), `assets/icon-large.png` (500x350); driver icons 75x75 and 500x500.
-- Custom capabilities defined inline in `app.json` (`measure_cpu`, `measure_memory`).
+- Custom capabilities defined inline in `app.json` (CPU, memory, disk usage, containers, VMs, uptime, array status).
 - Control actions are guarded by the device `allowControl` setting.
+- Polling is lightweight and configurable (10-300s intervals).
 
 ## CI
 GitHub Actions workflow runs `homey app validate --level publish` on push/PR.
