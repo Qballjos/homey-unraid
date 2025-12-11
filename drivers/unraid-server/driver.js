@@ -101,13 +101,13 @@ class UnraidDriver extends Homey.Driver {
 
   async onPair(session) {
     this.log('🔥 onPair called');
-    
+
     session.setHandler('list_devices', async () => {
       this.log('🔥 list_devices handler called');
       const devices = [{
         name: 'Unraid Server',
         data: {
-          id: `unraid-${Date.now()}`
+          id: `unraid-${Date.now()}`,
         },
         settings: {
           baseUrl: 'http://tower:8080/graphql',
@@ -119,20 +119,20 @@ class UnraidDriver extends Homey.Driver {
           pollShares: false,
           cpuThreshold: 80,
           diskTempThreshold: 60,
-          allowControl: false
-        }
+          allowControl: false,
+        },
       }];
       this.log('🔥 Returning devices:', devices.length);
       return devices;
     });
   }
-  
+
   async onPairListDevices() {
     // Fallback if Homey calls this directly
     this.log('🔥 onPairListDevices called (fallback)');
     return [{
       name: 'Unraid Server',
-      data: { id: `unraid-${Date.now()}` }
+      data: { id: `unraid-${Date.now()}` },
     }];
   }
 

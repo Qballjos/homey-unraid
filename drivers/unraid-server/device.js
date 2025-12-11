@@ -6,7 +6,7 @@ class UnraidDevice extends Homey.Device {
     try {
       this.log('🔥🔥🔥 Device onInit START');
       this.log(`Device init: ${this.getName()}`);
-      
+
       this.pollHandle = null;
       this.lastState = {
         arrayStarted: null,
@@ -22,17 +22,17 @@ class UnraidDevice extends Homey.Device {
 
       this.log('🔥 Step 1: Initialize capabilities');
       await this._initializeCapabilities();
-      
+
       this.log('🔥 Step 2: Apply settings');
       await this._applySettings(this.getSettings());
-      
+
       this.log('🔥 Step 3: Schedule polling');
       this._schedulePoll();
-      
+
       this.log('🔥 Step 4: Register handlers');
       this._registerActionHandlers();
       this._registerConditionHandlers();
-      
+
       this.log('🔥🔥🔥 Device onInit COMPLETE');
     } catch (error) {
       this.error('❌❌❌ Error in onInit:', error);
@@ -157,7 +157,7 @@ class UnraidDevice extends Homey.Device {
   async _applySettings(settings) {
     this.settings = settings;
     this.pollIntervalMs = Math.max(10, settings.pollInterval || 30) * 1000;
-    
+
     // Only create client if URL and API key are configured
     if (settings.baseUrl && settings.apiKey && settings.baseUrl !== 'http://tower:8080/graphql') {
       this.client = new UnraidGraphQLClient({ baseUrl: settings.baseUrl, apiKey: settings.apiKey });
@@ -193,7 +193,7 @@ class UnraidDevice extends Homey.Device {
       this.log('Skipping poll - device not configured');
       return;
     }
-    
+
     const query = this._buildQuery();
     const data = await this.client.request(query);
     this.setAvailable();
@@ -203,7 +203,10 @@ class UnraidDevice extends Homey.Device {
   _buildQuery() {
     const { domains = {} } = this.settings;
     const parts = [];
-    parts.push('system { uptime cpu { load } memory { used total } }');
+
+    // Try to query available fields
+    // Unraid API might have different schema
+    parts.push('__typename');
     if (domains.pollArray) {
       parts.push('array { status parity { inProgress percent errors } disks { name temp smartStatus spunDown } cache { pools { name free used } } mover { running } }');
     }
