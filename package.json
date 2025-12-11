@@ -12,7 +12,8 @@
     "install": "homey app install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "echo \"no tests yet\""
+    "test": "node test-local.js",
+    "test:all": "npm run lint && npm run test && npm run validate"
   },
   "keywords": [
     "homey",
