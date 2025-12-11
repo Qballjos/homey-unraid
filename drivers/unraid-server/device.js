@@ -310,7 +310,7 @@ class UnraidDevice extends Homey.Device {
 
     // System metrics from 'metrics' type (has 'cpu' and 'memory' fields)
     if (metrics) {
-      this.log('Metrics received:', JSON.stringify(metrics));
+      // Metrics received (CPU & Memory)
       
       if (metrics.cpu?.percentTotal !== null && metrics.cpu?.percentTotal !== undefined) {
         const cpuPercent = Math.round(metrics.cpu.percentTotal);
@@ -330,7 +330,7 @@ class UnraidDevice extends Homey.Device {
 
     // Info data (uptime, CPU temp)
     if (info) {
-      this.log('Info received:', JSON.stringify(info));
+      // Info received (OS & CPU)
       
       // Uptime (API returns boot time as ISO date string)
       if (info.os?.uptime) {
@@ -357,7 +357,7 @@ class UnraidDevice extends Homey.Device {
 
     // Array status and metrics (based on UnraidArray schema)
     if (array) {
-      this.log('Array received:', JSON.stringify(array));
+      // Array data received
       const started = array.state === 'STARTED';
       if (this.lastState.arrayStarted !== null && this.lastState.arrayStarted !== started) {
         const trig = started ? this.driver.triggers.arrayStarted : this.driver.triggers.arrayStopped;
@@ -418,6 +418,14 @@ class UnraidDevice extends Homey.Device {
         this.setCapabilityValue('measure_temperature', maxTemp).catch(this.error);
       }
 
+      // Clean up old disk states (memory optimization)
+      const currentDiskNames = new Set((array.disks || []).map(d => d.name));
+      Object.keys(this.lastState.disks).forEach(name => {
+        if (!currentDiskNames.has(name)) {
+          delete this.lastState.disks[name];
+        }
+      });
+
       let hasHotDisk = false;
       (array.disks || []).forEach(disk => {
         const prevDisk = this.lastState.disks[disk.name] || {};
@@ -469,9 +477,19 @@ class UnraidDevice extends Homey.Device {
 
     // Docker containers (from 'docker { containers }')
     if (docker?.containers) {
-      this.log('Docker received:', JSON.stringify(docker));
       const containers = docker.containers;
+      this.log(`Docker: ${containers.length} containers`);
       const runningContainers = containers.filter(c => c.state === 'RUNNING').length;
+
+      // Clean up old container states (memory optimization)
+      const currentContainerNames = new Set(
+        containers.map(c => (Array.isArray(c.names) ? c.names[0] : c.names).replace(/^\//, '')),
+      );
+      Object.keys(this.lastState.containers).forEach(name => {
+        if (!currentContainerNames.has(name)) {
+          delete this.lastState.containers[name];
+        }
+      });
       
       if (this.hasCapability('measure_containers')) {
         this.setCapabilityValue('measure_containers', runningContainers).catch(this.error);
@@ -538,9 +556,17 @@ class UnraidDevice extends Homey.Device {
 
     // Virtual machines (from 'vms { domains }')
     if (vms?.domains) {
-      this.log('VMs received:', JSON.stringify(vms));
       const domains = vms.domains;
+      this.log(`VMs: ${domains.length} virtual machines`);
       const runningVms = domains.filter(vm => vm.state === 'RUNNING').length;
+
+      // Clean up old VM states (memory optimization)
+      const currentVmNames = new Set(domains.map(vm => vm.name));
+      Object.keys(this.lastState.vms).forEach(name => {
+        if (!currentVmNames.has(name)) {
+          delete this.lastState.vms[name];
+        }
+      });
       
       if (this.hasCapability('measure_vms')) {
         this.setCapabilityValue('measure_vms', runningVms).catch(this.error);
@@ -576,7 +602,11 @@ class UnraidDevice extends Homey.Device {
           }
         }
 
-        this.lastState.vms[vm.name] = vm;
+        // Store only what we need for state tracking
+        this.lastState.vms[vm.name] = {
+          state: vm.state,
+          id: vm.id,
+        };
       });
     } else if (this.hasCapability('measure_vms')) {
       // VM polling disabled - set to 0 only if capability exists
@@ -588,7 +618,17 @@ class UnraidDevice extends Homey.Device {
       this._checkShareSpace(shares);
     }
 
-    this.lastState.shares = shares;
+    // Store only essential share data to reduce memory
+    if (shares && shares.length > 0) {
+      this.lastState.shares = shares.map(s => ({
+        name: s.name,
+        free: s.free,
+        used: s.used,
+        size: s.size,
+      }));
+    } else {
+      this.lastState.shares = [];
+    }
   }
 
   _checkShareSpace(shares) {
